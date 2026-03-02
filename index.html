@@ -114,6 +114,16 @@ width:0%;
 </div>
 
 <div class="card">
+<h3>Generator Script Cepat</h3>
+
+<input id="namaScript" placeholder="Nama Produk">
+
+<textarea id="kelebihanScript" placeholder="Tulis kelebihan produk (pisahkan dengan koma)" style="width:100%;height:80px;"></textarea>
+
+<button onclick="buatScript()">Buat Script</button>
+
+<pre id="hasilScript" style="white-space:pre-wrap;background:#f3f4f6;padding:10px;border-radius:8px;margin-top:10px;"></pre>
+</div>
 <h3>Grafik Skor Produk</h3>
 <canvas id="chart"></canvas>
 </div>
@@ -200,8 +210,34 @@ document.getElementById("targetText").innerText =
 }
 
 render();
+function buatScript(){
 
+let nama = document.getElementById("namaScript").value;
+let kelebihan = document.getElementById("kelebihanScript").value.split(",");
+
+let hasil = `
+🎬 HOOK:
+Stop scroll dulu! Ini bisa jadi solusi kamu!
+
+😩 MASALAH:
+Banyak orang masih salah pilih produk dan akhirnya nyesel.
+
+✨ SOLUSI:
+Aku nemu ${nama} dan ini menarik banget.
+
+🔥 KELEBIHAN:
+- ${kelebihan[0] || ""}
+- ${kelebihan[1] || ""}
+- ${kelebihan[2] || ""}
+
+💰 CTA:
+Link ada di keranjang sebelum kehabisan!
+`;
+
+document.getElementById("hasilScript").innerText = hasil;
+}
 </script>
 
 </body>
 </html>
+
