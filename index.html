@@ -1,86 +1,215 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Affiliate Master Tool</title>
-  <style>
-    body { font-family: Arial; padding: 20px; max-width: 600px; }
-    input { margin-bottom: 10px; width: 100%; padding: 5px; }
-    button { padding: 10px; width: 100%; font-weight: bold; }
-    h2 { margin-top: 30px; }
-  </style>
+<meta charset="UTF-8">
+<title>GaptekNiih Affiliate System</title>
+<style>
+body {
+  font-family: Arial;
+  background:#0f0f0f;
+  color:white;
+  padding:20px;
+  max-width:900px;
+  margin:auto;
+}
+h1,h2 { color:#00ff88; text-align:center; }
+input {
+  width:100%;
+  padding:8px;
+  margin:5px 0 10px 0;
+  border-radius:5px;
+  border:none;
+}
+button {
+  padding:10px;
+  width:100%;
+  background:#00ff88;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+  border-radius:5px;
+}
+.card {
+  background:#1c1c1c;
+  padding:15px;
+  margin-bottom:20px;
+  border-radius:10px;
+}
+.result { margin-top:10px; font-weight:bold; }
+hr { border:1px solid #333; margin:30px 0;}
+.footer {
+  text-align:center;
+  margin-top:40px;
+  color:#888;
+  font-size:14px;
+}
+.brand {
+  text-align:center;
+  font-size:14px;
+  color:#00ff88;
+  margin-bottom:20px;
+}
+</style>
 </head>
 <body>
 
-<h1>🔥 Affiliate Master Tool</h1>
+<h1>🔥 GaptekNiih Affiliate System 2.0</h1>
+<div class="brand">Build Smart. Earn Smart.</div>
 
-<h2>1️⃣ Screening Produk</h2>
-Harga Produk (Rp):
+<div class="card">
+<h2>1️⃣ Smart Screening (Score 0–100)</h2>
+
+Harga:
 <input type="number" id="harga">
 
 Komisi (%):
 <input type="number" id="komisi">
 
-Total Terjual:
+Terjual:
 <input type="number" id="terjual">
 
 Rating:
 <input type="number" step="0.1" id="rating">
 
-<button onclick="screening()">Cek Kelayakan</button>
+<button onclick="hitungScore()">Hitung Score</button>
+<div class="result" id="hasilScore"></div>
+</div>
 
-<h3 id="hasilScreening"></h3>
+<hr>
 
-<h2>2️⃣ Simulasi Income Video</h2>
-Target View Video:
-<input type="number" id="view">
+<div class="card">
+<h2>2️⃣ Target Income Calculator</h2>
 
-Estimasi CTR ke Produk (%):
-<input type="number" id="ctr">
+Target Income Bulanan:
+<input type="number" id="targetIncome">
 
-Estimasi Conversion Rate (%):
+Rata-rata Fee per Sale:
+<input type="number" id="avgFee">
+
+Conversion Rate (%):
 <input type="number" id="cr">
 
-<button onclick="hitungIncome()">Hitung Potensi Income</button>
+CTR Video (%):
+<input type="number" id="ctr">
 
-<h3 id="hasilIncome"></h3>
+<button onclick="hitungTarget()">Hitung Target</button>
+<div class="result" id="hasilTarget"></div>
+</div>
+
+<hr>
+
+<div class="card">
+<h2>3️⃣ Simulasi 30 Hari Konsisten</h2>
+
+Video per Hari:
+<input type="number" id="videoPerHari">
+
+Rata-rata View per Video:
+<input type="number" id="viewPerVideo">
+
+CTR (%):
+<input type="number" id="ctrSimulasi">
+
+Conversion Rate (%):
+<input type="number" id="crSimulasi">
+
+Fee per Sale:
+<input type="number" id="feeSimulasi">
+
+<button onclick="simulasi30Hari()">Simulasi</button>
+<div class="result" id="hasilSimulasi"></div>
+</div>
+
+<div class="footer">
+Dibuat oleh <strong>GaptekNiih</strong> 🚀
+</div>
 
 <script>
+function hitungScore() {
+let harga = parseFloat(document.getElementById("harga").value);
+let komisi = parseFloat(document.getElementById("komisi").value);
+let terjual = parseFloat(document.getElementById("terjual").value);
+let rating = parseFloat(document.getElementById("rating").value);
 
-function screening() {
-  let harga = parseFloat(document.getElementById("harga").value);
-  let komisi = parseFloat(document.getElementById("komisi").value) / 100;
-  let terjual = parseInt(document.getElementById("terjual").value);
-  let rating = parseFloat(document.getElementById("rating").value);
-
-  let fee = harga * komisi;
-
-  if (fee >= 15000 && terjual >= 1000 && rating >= 4.7) {
-    document.getElementById("hasilScreening").innerHTML =
-      "GAS 🔥 Produk Layak! Estimasi Fee per Sale: Rp " + fee.toLocaleString();
-  } else {
-    document.getElementById("hasilScreening").innerHTML =
-      "SKIP ❌ Produk Kurang Ideal. Estimasi Fee: Rp " + fee.toLocaleString();
-  }
+if(!harga || !komisi || !terjual || !rating){
+document.getElementById("hasilScore").innerHTML = "Lengkapi semua data dulu.";
+return;
 }
 
-function hitungIncome() {
-  let harga = parseFloat(document.getElementById("harga").value);
-  let komisi = parseFloat(document.getElementById("komisi").value) / 100;
-  let view = parseInt(document.getElementById("view").value);
-  let ctr = parseFloat(document.getElementById("ctr").value) / 100;
-  let cr = parseFloat(document.getElementById("cr").value) / 100;
+let fee = harga * (komisi/100);
+let score = 0;
 
-  let klik = view * ctr;
-  let sales = klik * cr;
-  let fee = harga * komisi;
-  let income = sales * fee;
+if(fee >= 20000) score += 30;
+else if(fee >= 15000) score += 20;
+else score += 10;
 
-  document.getElementById("hasilIncome").innerHTML =
-    "Estimasi Klik: " + Math.round(klik) +
-    "<br>Estimasi Sales: " + Math.round(sales) +
-    "<br>Estimasi Income: Rp " + income.toLocaleString();
+if(rating >= 4.8) score += 25;
+else if(rating >= 4.7) score += 20;
+else score += 10;
+
+if(terjual >= 5000) score += 25;
+else if(terjual >= 1000) score += 20;
+else score += 10;
+
+if(harga >= 50000 && harga <= 300000) score += 20;
+else score += 10;
+
+let kategori = "";
+if(score >= 80) kategori = "🔥 HOT PRODUCT";
+else if(score >= 65) kategori = "👍 POTENTIAL";
+else if(score >= 50) kategori = "⚠ RISKY";
+else kategori = "❌ AVOID";
+
+document.getElementById("hasilScore").innerHTML =
+"Score: " + score + "/100<br>Fee per Sale: Rp " + fee.toLocaleString() +
+"<br>Kategori: " + kategori;
 }
 
+function hitungTarget() {
+let target = parseFloat(document.getElementById("targetIncome").value);
+let fee = parseFloat(document.getElementById("avgFee").value);
+let cr = parseFloat(document.getElementById("cr").value)/100;
+let ctr = parseFloat(document.getElementById("ctr").value)/100;
+
+if(!target || !fee || !cr || !ctr){
+document.getElementById("hasilTarget").innerHTML = "Lengkapi semua data dulu.";
+return;
+}
+
+let sales = target / fee;
+let klik = sales / cr;
+let view = klik / ctr;
+let perHari = sales / 30;
+
+document.getElementById("hasilTarget").innerHTML =
+"Perlu Sales: " + Math.ceil(sales) +
+"<br>Perlu Klik: " + Math.ceil(klik) +
+"<br>Perlu View: " + Math.ceil(view) +
+"<br>Target Sales per Hari: " + Math.ceil(perHari);
+}
+
+function simulasi30Hari(){
+let video = parseFloat(document.getElementById("videoPerHari").value);
+let view = parseFloat(document.getElementById("viewPerVideo").value);
+let ctr = parseFloat(document.getElementById("ctrSimulasi").value)/100;
+let cr = parseFloat(document.getElementById("crSimulasi").value)/100;
+let fee = parseFloat(document.getElementById("feeSimulasi").value);
+
+if(!video || !view || !ctr || !cr || !fee){
+document.getElementById("hasilSimulasi").innerHTML = "Lengkapi semua data dulu.";
+return;
+}
+
+let totalView = video * view * 30;
+let totalKlik = totalView * ctr;
+let totalSales = totalKlik * cr;
+let income = totalSales * fee;
+
+document.getElementById("hasilSimulasi").innerHTML =
+"Total View 30 Hari: " + Math.ceil(totalView) +
+"<br>Total Sales: " + Math.ceil(totalSales) +
+"<br>Estimasi Income: Rp " + income.toLocaleString();
+}
 </script>
 
 </body>
