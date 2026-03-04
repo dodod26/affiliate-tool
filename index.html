@@ -3,92 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Affiliate Control Room</title>
+<title>GaptekNiih Affiliate System</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 body{
-font-family:Arial;
+font-family:Arial, sans-serif;
 margin:0;
 background:#f4f6f9;
 }
+
 header{
-background:#1f2937;
+background:#111827;
 color:white;
-padding:15px;
+padding:20px;
 text-align:center;
-font-size:20px;
 }
+
 .container{
-padding:15px;
-max-width:900px;
+max-width:1000px;
 margin:auto;
+padding:15px;
 }
+
 .card{
 background:white;
 padding:15px;
 margin-bottom:15px;
 border-radius:10px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
-input,select{
+
+input,select,textarea{
 width:100%;
 padding:8px;
 margin:5px 0;
+border-radius:6px;
+border:1px solid #ddd;
 }
+
 button{
 padding:10px;
-border:none;
 background:#2563eb;
 color:white;
-border-radius:5px;
+border:none;
+border-radius:6px;
 cursor:pointer;
 }
+
 table{
 width:100%;
 border-collapse:collapse;
 margin-top:10px;
 }
+
 th,td{
 border:1px solid #ddd;
 padding:8px;
 font-size:12px;
+text-align:center;
 }
-.progress{
-height:20px;
-background:#ddd;
-border-radius:10px;
-overflow:hidden;
-}
-.progress-bar{
-height:100%;
-background:#10b981;
-width:0%;
+
+footer{
+text-align:center;
+padding:15px;
+font-size:12px;
+opacity:0.6;
 }
 </style>
 </head>
+
 <body>
 
-<header style="text-align:center;">
-<div style="font-size:22px;font-weight:bold;">
-GaptekNiih
-</div>
-<div style="font-size:13px;opacity:0.7;margin-top:3px;">
-Affiliate Control Room
-</div>
-<div style="font-size:11px;opacity:0.5;margin-top:5px;">
-Dibuat oleh GaptekNiih
-</div>
+<header>
+<div style="font-size:24px;font-weight:bold;">GaptekNiih</div>
+<div style="font-size:14px;opacity:0.7;">Affiliate Smart Screening System</div>
 </header>
 
 <div class="container">
-
-<div class="card">
-<h3>Target 10 Juta</h3>
-<div class="progress">
-<div class="progress-bar" id="progressBar"></div>
-</div>
-<p id="targetText"></p>
-</div>
 
 <div class="card">
 <h3>Tambah Produk</h3>
@@ -105,17 +97,18 @@ Dibuat oleh GaptekNiih
 <input id="rating" type="number" step="0.1" placeholder="Rating (1-5)">
 <input id="terjual" type="number" placeholder="Jumlah Terjual">
 <input id="kompetitor" type="number" placeholder="Jumlah Kompetitor">
-<button onclick="tambahProduk()">Simpan</button>
+<button onclick="tambahProduk()">Simpan & Screening</button>
 </div>
 
 <div class="card">
-<h3>Daftar Produk</h3>
+<h3>Hasil Screening</h3>
 <table>
 <thead>
 <tr>
-<th>Nama</th>
-<th>Kat</th>
+<th>Produk</th>
+<th>Kategori</th>
 <th>Skor</th>
+<th>Status</th>
 <th>Aksi</th>
 </tr>
 </thead>
@@ -124,37 +117,64 @@ Dibuat oleh GaptekNiih
 </div>
 
 <div class="card">
-<h3>Generator Script Cepat</h3>
-
+<h3>Generator Script Video</h3>
 <input id="namaScript" placeholder="Nama Produk">
-
-<textarea id="kelebihanScript" placeholder="Tulis kelebihan produk (pisahkan dengan koma)" style="width:100%;height:80px;"></textarea>
-
+<textarea id="kelebihanScript" placeholder="Tulis kelebihan (pisahkan dengan koma)"></textarea>
 <button onclick="buatScript()">Buat Script</button>
-
 <pre id="hasilScript" style="white-space:pre-wrap;background:#f3f4f6;padding:10px;border-radius:8px;margin-top:10px;"></pre>
 </div>
+
+<div class="card">
 <h3>Grafik Skor Produk</h3>
 <canvas id="chart"></canvas>
 </div>
 
 </div>
 
+<footer>
+Dibuat oleh GaptekNiih
+</footer>
+
 <script>
 
 let data = JSON.parse(localStorage.getItem("produk")) || [];
 
 function hitungSkor(harga,komisi,rating,terjual,kompetitor){
-return (
-(komisi*3)+
-(rating*10)+
-(Math.log(terjual+1)*5)-
-(kompetitor*0.5)+
-(harga>100000?10:0)
-).toFixed(0);
+
+let skor = 0;
+
+if(komisi >= 15) skor += 30;
+else if(komisi >= 10) skor += 20;
+else skor += 10;
+
+if(rating >= 4.7) skor += 25;
+else if(rating >= 4.5) skor += 15;
+
+if(terjual >= 1000) skor += 25;
+else if(terjual >= 200) skor += 15;
+
+if(kompetitor > 200) skor -= 15;
+else if(kompetitor > 100) skor -= 5;
+
+if(harga >= 50000 && harga <= 300000) skor += 10;
+
+return skor;
+}
+
+function getLabel(skor){
+if(skor >= 80){
+return "🟢 GAS";
+}
+else if(skor >= 50){
+return "🟡 TEST";
+}
+else{
+return "🔴 SKIP";
+}
 }
 
 function tambahProduk(){
+
 let nama = document.getElementById("nama").value;
 let kategori = document.getElementById("kategori").value;
 let harga = parseFloat(document.getElementById("harga").value);
@@ -178,48 +198,44 @@ render();
 }
 
 function render(){
+
 let tabel = document.getElementById("tabel");
 tabel.innerHTML="";
+
 data.forEach((item,i)=>{
 tabel.innerHTML += `
 <tr>
 <td>${item.nama}</td>
 <td>${item.kategori}</td>
 <td>${item.skor}</td>
+<td>${getLabel(item.skor)}</td>
 <td><button onclick="hapus(${i})">Hapus</button></td>
 </tr>
 `;
 });
 
 updateChart();
-updateTarget();
 }
 
 let chart;
+
 function updateChart(){
-let ctx = document.getElementById('chart').getContext('2d');
+let ctx = document.getElementById("chart").getContext("2d");
+
 if(chart) chart.destroy();
+
 chart = new Chart(ctx,{
-type:'bar',
+type:"bar",
 data:{
 labels:data.map(d=>d.nama),
 datasets:[{
-label:'Skor',
+label:"Skor",
 data:data.map(d=>d.skor)
 }]
 }
 });
 }
 
-function updateTarget(){
-let estimasi = data.reduce((acc,d)=>acc+(d.skor*1000),0);
-let persen = Math.min((estimasi/10000000)*100,100);
-document.getElementById("progressBar").style.width = persen+"%";
-document.getElementById("targetText").innerText =
-"Estimasi Potensi: Rp "+estimasi.toLocaleString();
-}
-
-render();
 function buatScript(){
 
 let nama = document.getElementById("namaScript").value;
@@ -227,10 +243,10 @@ let kelebihan = document.getElementById("kelebihanScript").value.split(",");
 
 let hasil = `
 🎬 HOOK:
-Stop scroll dulu! Ini bisa jadi solusi kamu!
+Stop scroll! Ini bisa jadi solusi kamu!
 
 😩 MASALAH:
-Banyak orang masih salah pilih produk dan akhirnya nyesel.
+Banyak orang salah pilih produk dan akhirnya nyesel.
 
 ✨ SOLUSI:
 Aku nemu ${nama} dan ini menarik banget.
@@ -246,9 +262,10 @@ Link ada di keranjang sebelum kehabisan!
 
 document.getElementById("hasilScript").innerText = hasil;
 }
+
+render();
+
 </script>
 
 </body>
 </html>
-
-
