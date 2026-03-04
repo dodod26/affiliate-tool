@@ -53,7 +53,7 @@ Dibuat oleh GaptekNiih
 <script>
 
 function analisa(){
-  async function kirimKeSheet(nama,harga,rating,terjual,script){
+  async function kirimKeSheet(nama,harga,rating,terjual,script,status){
 
 const url = "https://script.google.com/macros/s/AKfycbxrUCoBw0FS4zLUH9rkvYmX_2wsp1giK-jOAkI27oVuBV8CBPHWAdzE8l-carVx631t/exec";
 
@@ -63,7 +63,8 @@ const data = {
   rating: rating,
   terjual: terjual,
   masalah: "Rumah tangga",
-  script: script
+  script: script,
+  status: status
 };
 
 await fetch(url,{
@@ -136,7 +137,7 @@ ${angle}
 Kalau lagi cari yang seperti ini, cek link di keranjang sebelum kehabisan.
 `;
 
-  kirimKeSheet(nama,harga,rating,terjual,script);
+  kirimKeSheet(nama,harga,rating,terjual,script,status);
   
 document.getElementById("output").innerHTML = `
 <div class="result ${warna}">
@@ -152,4 +153,5 @@ document.getElementById("output").innerHTML = `
 
 </body>
 </html>
+
 
