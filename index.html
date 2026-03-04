@@ -41,7 +41,7 @@ footer{text-align:center;padding:15px;font-size:12px;opacity:0.6;}
 <input id="kompetitor" type="number" placeholder="Perkiraan Kompetitor">
 
 <button onclick="analisa()">Analisa & Buat Script</button>
-<button onclick="generateHookBaru()">Generate Hook Baru Lagi 🔥</button>
+<button onclick="generateHookBaru()">Generate Hook Baru Lagi</button>
 
 <div id="output"></div>
 
@@ -55,7 +55,6 @@ footer{text-align:center;padding:15px;font-size:12px;opacity:0.6;}
 let globalData = {};
 let globalStatus = "";
 let globalWarna = "";
-let globalAngle = "";
 
 /* ============================= */
 
@@ -100,24 +99,21 @@ if(terjual >= 500) skor += 20;
 if(kompetitor <= 200) skor += 20;
 
 if(skor >= 80){
-globalStatus="🟢 POTENSI VIRAL KUAT";
+globalStatus="POTENSI VIRAL KUAT";
 globalWarna="green";
-globalAngle="Fokus ke solusi cepat & relatable.";
 }
 else if(skor >= 50){
-globalStatus="🟡 LAYAK DICOBA";
+globalStatus="LAYAK DICOBA";
 globalWarna="orange";
-globalAngle="Tekankan value & harga terjangkau.";
 }
 else{
-globalStatus="🔴 RESIKO TINGGI";
+globalStatus="RESIKO TINGGI";
 globalWarna="red";
-globalAngle="Butuh storytelling unik.";
 }
 
 globalData = {nama,harga,rating,terjual};
 
-generateHookBaru(); // langsung generate pertama
+generateHookBaru();
 }
 
 /* ============================= */
@@ -125,57 +121,125 @@ generateHookBaru(); // langsung generate pertama
 function generateHookBaru(){
 
 if(!globalData.nama){
-alert("Isi dulu datanya dan klik Analisa ya 😁");
+alert("Isi dulu datanya dan klik Analisa ya.");
 return;
 }
 
-let hooks = [
-`Stop scroll! ${globalData.nama} ini bikin hidup lebih simpel!`,
-`Serius ini kepake banget 😭 ${globalData.nama} bikin rumah lebih praktis.`,
-`Baru tau ternyata ${globalData.nama} sepenting ini di rumah!`,
-`Kenapa baru nemu ${globalData.nama} sekarang sih?!`,
-`Produk kecil ini ternyata efeknya besar banget!`
+let variations = [
+
+function(){
+return {
+voice: `
+Belakangan ini ada satu detail kecil di rumah yang cukup mengganggu.
+
+Awalnya terlihat sepele.
+Namun lama-lama terasa juga dampaknya dalam aktivitas sehari-hari.
+
+Akhirnya banyak orang mulai mencari solusi yang lebih praktis.
+Salah satunya dengan menggunakan ${globalData.nama}.
+
+Penggunaannya sederhana.
+Tidak ribet.
+Dan cukup membantu membuat area terasa lebih rapi.
+
+Harganya sekitar Rp ${globalData.harga}.
+Ratingnya ${globalData.rating}.
+Sudah terjual lebih dari ${globalData.terjual} unit.
+
+Jika kamu ingin solusi yang lebih praktis di rumah,
+produk ini bisa jadi salah satu pertimbangan.
+`,
+overlay: `
+TEKS OVERLAY SHOPEE
+
+0–3 detik:
+Detail kecil, efek besar
+
+3–10 detik:
+Sering bikin area kurang rapi
+
+10–20 detik:
+Solusi praktis dan tidak ribet
+
+20–27 detik:
+Harga terjangkau, rating tinggi
+
+27–30 detik:
+Cek detailnya di keranjang
+`
+}
+},
+
+function(){
+return {
+voice: `
+Kadang kenyamanan di rumah terganggu hanya karena hal sederhana.
+
+Tidak terasa penting di awal.
+Tapi cukup memengaruhi aktivitas sehari-hari.
+
+Karena itu banyak orang beralih ke solusi yang lebih efisien,
+seperti ${globalData.nama} ini.
+
+Desainnya simpel.
+Mudah digunakan.
+Dan membantu membuat semuanya lebih tertata.
+
+Dengan harga sekitar Rp ${globalData.harga},
+rating ${globalData.rating},
+dan penjualan lebih dari ${globalData.terjual} unit,
+
+produk ini cukup menarik untuk dipertimbangkan.
+`,
+overlay: `
+TEKS OVERLAY SHOPEE
+
+0–3 detik:
+Awalnya terlihat biasa
+
+3–10 detik:
+Ternyata cukup mengganggu
+
+10–20 detik:
+Lebih praktis digunakan
+
+20–27 detik:
+Sudah banyak yang pakai
+
+27–30 detik:
+Lihat informasinya di link
+`
+}
+}
+
 ];
 
-let ctas = [
-`Cek link di keranjang sekarang juga.`,
-`Kalau butuh yang praktis kaya gini, langsung cek.`,
-`Udah banyak yang pake, jangan sampai ketinggalan.`,
-`Sebelum kehabisan, cek sekarang.`,
-`Klik linknya dan rasain sendiri manfaatnya.`
-];
+let randomVariation = variations[Math.floor(Math.random()*variations.length)];
+let result = randomVariation();
 
-let randomHook = hooks[Math.floor(Math.random()*hooks.length)];
-let randomCTA = ctas[Math.floor(Math.random()*ctas.length)];
+let finalOutput = `
+SCRIPT VOICE OVER
 
-let script = `
-🎬 HOOK:
-${randomHook}
+${result.voice}
 
-😩 MASALAH:
-Kadang hal kecil di rumah bikin ribet tanpa kita sadar.
-
-✨ SOLUSI:
-${globalData.nama} ini bisa jadi solusi praktis buat itu.
-
-🔥 FAKTA PRODUK:
-Harga Rp ${globalData.harga}
-Rating ${globalData.rating}
-Terjual ${globalData.terjual}+ unit
-
-🎯 ANGLE:
-${globalAngle}
-
-💰 CTA:
-${randomCTA}
+${result.overlay}
 `;
 
 document.getElementById("output").innerHTML = `
 <div class="result ${globalWarna}">
 <b>Status:</b> ${globalStatus}<br><br>
-<pre>${script}</pre>
+<pre>${finalOutput}</pre>
 </div>
 `;
+
+kirimKeSheet(
+globalData.nama,
+globalData.harga,
+globalData.rating,
+globalData.terjual,
+result.voice,
+globalStatus
+);
 
 }
 
