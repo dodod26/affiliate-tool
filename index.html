@@ -3,73 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GaptekNiih Affiliate System</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<title>GaptekNiih Home Viral Scanner</title>
 <style>
-body{
-font-family:Arial, sans-serif;
-margin:0;
-background:#f4f6f9;
-}
-
-header{
-background:#111827;
-color:white;
-padding:20px;
-text-align:center;
-}
-
-.container{
-max-width:1000px;
-margin:auto;
-padding:15px;
-}
-
-.card{
-background:white;
-padding:15px;
-margin-bottom:15px;
-border-radius:10px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-
-input,select,textarea{
-width:100%;
-padding:8px;
-margin:5px 0;
-border-radius:6px;
-border:1px solid #ddd;
-}
-
-button{
-padding:10px;
-background:#2563eb;
-color:white;
-border:none;
-border-radius:6px;
-cursor:pointer;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:10px;
-}
-
-th,td{
-border:1px solid #ddd;
-padding:8px;
-font-size:12px;
-text-align:center;
-}
-
-footer{
-text-align:center;
-padding:15px;
-font-size:12px;
-opacity:0.6;
-}
+body{font-family:Arial;margin:0;background:#f3f4f6;}
+header{background:#111827;color:white;text-align:center;padding:20px;}
+.container{max-width:900px;margin:auto;padding:15px;}
+.card{background:white;padding:15px;margin-bottom:15px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+input,select,textarea{width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #ddd;}
+button{padding:10px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;}
+.result{padding:10px;border-radius:8px;margin-top:10px;}
+.green{background:#dcfce7;}
+.orange{background:#fef3c7;}
+.red{background:#fee2e2;}
+footer{text-align:center;padding:15px;font-size:12px;opacity:0.6;}
 </style>
 </head>
 
@@ -77,56 +23,25 @@ opacity:0.6;
 
 <header>
 <div style="font-size:24px;font-weight:bold;">GaptekNiih</div>
-<div style="font-size:14px;opacity:0.7;">Affiliate Smart Screening System</div>
+<div style="font-size:14px;opacity:0.7;">Home Viral Scanner PRO</div>
 </header>
 
 <div class="container">
 
 <div class="card">
-<h3>Tambah Produk</h3>
+<h3>Input Data Produk Rumah Tangga</h3>
+
 <input id="nama" placeholder="Nama Produk">
-<select id="kategori">
-<option>Fashion</option>
-<option>Beauty</option>
-<option>Gadget</option>
-<option>Rumah Tangga</option>
-<option>Viral</option>
-</select>
-<input id="harga" type="number" placeholder="Harga">
-<input id="komisi" type="number" placeholder="Komisi %">
-<input id="rating" type="number" step="0.1" placeholder="Rating (1-5)">
-<input id="terjual" type="number" placeholder="Jumlah Terjual">
-<input id="kompetitor" type="number" placeholder="Jumlah Kompetitor">
-<button onclick="tambahProduk()">Simpan & Screening</button>
-</div>
+<input id="harga" type="number" placeholder="Harga (contoh: 120000)">
+<input id="komisi" type="number" placeholder="Komisi % (contoh: 15)">
+<input id="rating" type="number" step="0.1" placeholder="Rating (contoh: 4.8)">
+<input id="terjual" type="number" placeholder="Jumlah Terjual (contoh: 1200)">
+<input id="kompetitor" type="number" placeholder="Perkiraan Kompetitor (contoh: 150)">
 
-<div class="card">
-<h3>Hasil Screening</h3>
-<table>
-<thead>
-<tr>
-<th>Produk</th>
-<th>Kategori</th>
-<th>Skor</th>
-<th>Status</th>
-<th>Aksi</th>
-</tr>
-</thead>
-<tbody id="tabel"></tbody>
-</table>
-</div>
+<button onclick="analisa()">Analisa Sekarang</button>
 
-<div class="card">
-<h3>Generator Script Video</h3>
-<input id="namaScript" placeholder="Nama Produk">
-<textarea id="kelebihanScript" placeholder="Tulis kelebihan (pisahkan dengan koma)"></textarea>
-<button onclick="buatScript()">Buat Script</button>
-<pre id="hasilScript" style="white-space:pre-wrap;background:#f3f4f6;padding:10px;border-radius:8px;margin-top:10px;"></pre>
-</div>
+<div id="output"></div>
 
-<div class="card">
-<h3>Grafik Skor Produk</h3>
-<canvas id="chart"></canvas>
 </div>
 
 </div>
@@ -137,133 +52,80 @@ Dibuat oleh GaptekNiih
 
 <script>
 
-let data = JSON.parse(localStorage.getItem("produk")) || [];
-
-function hitungSkor(harga,komisi,rating,terjual,kompetitor){
-
-let skor = 0;
-
-if(komisi >= 15) skor += 30;
-else if(komisi >= 10) skor += 20;
-else skor += 10;
-
-if(rating >= 4.7) skor += 25;
-else if(rating >= 4.5) skor += 15;
-
-if(terjual >= 1000) skor += 25;
-else if(terjual >= 200) skor += 15;
-
-if(kompetitor > 200) skor -= 15;
-else if(kompetitor > 100) skor -= 5;
-
-if(harga >= 50000 && harga <= 300000) skor += 10;
-
-return skor;
-}
-
-function getLabel(skor){
-if(skor >= 80){
-return "🟢 GAS";
-}
-else if(skor >= 50){
-return "🟡 TEST";
-}
-else{
-return "🔴 SKIP";
-}
-}
-
-function tambahProduk(){
+function analisa(){
 
 let nama = document.getElementById("nama").value;
-let kategori = document.getElementById("kategori").value;
 let harga = parseFloat(document.getElementById("harga").value);
 let komisi = parseFloat(document.getElementById("komisi").value);
 let rating = parseFloat(document.getElementById("rating").value);
 let terjual = parseFloat(document.getElementById("terjual").value);
 let kompetitor = parseFloat(document.getElementById("kompetitor").value);
 
-let skor = hitungSkor(harga,komisi,rating,terjual,kompetitor);
+let skor = 0;
 
-data.push({nama,kategori,skor});
-localStorage.setItem("produk",JSON.stringify(data));
+// LOGIKA KHUSUS RUMAH TANGGA
+if(harga <= 200000) skor += 20;
+if(komisi >= 10) skor += 20;
+if(rating >= 4.7) skor += 20;
+if(terjual >= 500) skor += 20;
+if(kompetitor <= 200) skor += 20;
 
-render();
+let status = "";
+let warna = "";
+let angle = "";
+let hook = "";
+let script = "";
+
+if(skor >= 80){
+status = "🟢 POTENSI VIRAL KUAT";
+warna = "green";
+angle = "Fokus ke kemudahan & solusi masalah sehari-hari.";
+hook = "Stop scroll! Ini solusi simpel yang banyak orang belum tahu.";
+}
+else if(skor >= 50){
+status = "🟡 LAYAK DICOBA";
+warna = "orange";
+angle = "Fokus ke harga terjangkau & fungsi praktis.";
+hook = "Produk ini ternyata cukup membantu lho.";
+}
+else{
+status = "🔴 RESIKO TINGGI";
+warna = "red";
+angle = "Kurang kuat untuk konten massal, kecuali ada angle unik.";
+hook = "Banyak yang belum tahu soal produk ini.";
 }
 
-function hapus(index){
-data.splice(index,1);
-localStorage.setItem("produk",JSON.stringify(data));
-render();
-}
-
-function render(){
-
-let tabel = document.getElementById("tabel");
-tabel.innerHTML="";
-
-data.forEach((item,i)=>{
-tabel.innerHTML += `
-<tr>
-<td>${item.nama}</td>
-<td>${item.kategori}</td>
-<td>${item.skor}</td>
-<td>${getLabel(item.skor)}</td>
-<td><button onclick="hapus(${i})">Hapus</button></td>
-</tr>
-`;
-});
-
-updateChart();
-}
-
-let chart;
-
-function updateChart(){
-let ctx = document.getElementById("chart").getContext("2d");
-
-if(chart) chart.destroy();
-
-chart = new Chart(ctx,{
-type:"bar",
-data:{
-labels:data.map(d=>d.nama),
-datasets:[{
-label:"Skor",
-data:data.map(d=>d.skor)
-}]
-}
-});
-}
-
-function buatScript(){
-
-let nama = document.getElementById("namaScript").value;
-let kelebihan = document.getElementById("kelebihanScript").value.split(",");
-
-let hasil = `
+script = `
 🎬 HOOK:
-Stop scroll! Ini bisa jadi solusi kamu!
+${hook}
 
 😩 MASALAH:
-Banyak orang salah pilih produk dan akhirnya nyesel.
+Kadang hal kecil di rumah bikin ribet tanpa kita sadar.
 
 ✨ SOLUSI:
-Aku nemu ${nama} dan ini menarik banget.
+${nama} ini bisa jadi solusi praktis untuk masalah itu.
 
-🔥 KELEBIHAN:
-- ${kelebihan[0] || ""}
-- ${kelebihan[1] || ""}
-- ${kelebihan[2] || ""}
+🔥 FAKTA PRODUK:
+Harga sekitar Rp ${harga}
+Rating ${rating}
+Sudah terjual ${terjual}+ unit
+
+🎯 ANGLE KONTEN:
+${angle}
 
 💰 CTA:
-Link ada di keranjang sebelum kehabisan!
+Kalau lagi cari yang seperti ini, cek link di keranjang sebelum kehabisan.
 `;
 
-document.getElementById("hasilScript").innerText = hasil;
-}
+document.getElementById("output").innerHTML = `
+<div class="result ${warna}">
+<b>Skor:</b> ${skor}/100<br>
+<b>Status:</b> ${status}<br><br>
+<pre style="white-space:pre-wrap;">${script}</pre>
+</div>
+`;
 
-render();
+}
 
 </script>
 
