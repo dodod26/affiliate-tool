@@ -3,18 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GaptekNiih Home Viral Scanner</title>
+<title>GaptekNiih Home Viral Scanner PRO</title>
+
 <style>
 body{font-family:Arial;margin:0;background:#f3f4f6;}
 header{background:#111827;color:white;text-align:center;padding:20px;}
 .container{max-width:900px;margin:auto;padding:15px;}
 .card{background:white;padding:15px;margin-bottom:15px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-input,select,textarea{width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #ddd;}
-button{padding:10px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;}
+input{width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #ddd;}
+button{padding:10px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;margin-top:5px;}
 .result{padding:10px;border-radius:8px;margin-top:10px;}
 .green{background:#dcfce7;}
 .orange{background:#fef3c7;}
 .red{background:#fee2e2;}
+pre{white-space:pre-wrap;}
 footer{text-align:center;padding:15px;font-size:12px;opacity:0.6;}
 </style>
 </head>
@@ -23,37 +25,41 @@ footer{text-align:center;padding:15px;font-size:12px;opacity:0.6;}
 
 <header>
 <div style="font-size:24px;font-weight:bold;">GaptekNiih</div>
-<div style="font-size:14px;opacity:0.7;">Home Viral Scanner PRO</div>
+<div style="font-size:14px;opacity:0.7;">Home Viral Scanner AUTO VARIASI</div>
 </header>
 
 <div class="container">
-
 <div class="card">
-<h3>Input Data Produk Rumah Tangga</h3>
+
+<h3>Input Data Produk</h3>
 
 <input id="nama" placeholder="Nama Produk">
-<input id="harga" type="number" placeholder="Harga (contoh: 120000)">
-<input id="komisi" type="number" placeholder="Komisi % (contoh: 15)">
-<input id="rating" type="number" step="0.1" placeholder="Rating (contoh: 4.8)">
-<input id="terjual" type="number" placeholder="Jumlah Terjual (contoh: 1200)">
-<input id="kompetitor" type="number" placeholder="Perkiraan Kompetitor (contoh: 150)">
+<input id="harga" type="number" placeholder="Harga">
+<input id="komisi" type="number" placeholder="Komisi %">
+<input id="rating" type="number" step="0.1" placeholder="Rating">
+<input id="terjual" type="number" placeholder="Jumlah Terjual">
+<input id="kompetitor" type="number" placeholder="Perkiraan Kompetitor">
 
-<button onclick="analisa()">Analisa Sekarang</button>
+<button onclick="analisa()">Analisa & Buat Script</button>
+<button onclick="generateHookBaru()">Generate Hook Baru Lagi 🔥</button>
 
 <div id="output"></div>
 
 </div>
-
 </div>
 
-<footer>
-Dibuat oleh GaptekNiih
-</footer>
+<footer>Dibuat oleh GaptekNiih</footer>
 
 <script>
 
-function analisa(){
-  async function kirimKeSheet(nama,harga,rating,terjual,script,status){
+let globalData = {};
+let globalStatus = "";
+let globalWarna = "";
+let globalAngle = "";
+
+/* ============================= */
+
+async function kirimKeSheet(nama,harga,rating,terjual,script,status){
 
 const url = "https://script.google.com/macros/s/AKfycbxrUCoBw0FS4zLUH9rkvYmX_2wsp1giK-jOAkI27oVuBV8CBPHWAdzE8l-carVx631t/exec";
 
@@ -70,10 +76,14 @@ const data = {
 await fetch(url,{
   method:"POST",
   body: JSON.stringify(data),
-  mode:"no-cors"
+  headers: { "Content-Type": "application/json" }
 });
 
 }
+
+/* ============================= */
+
+function analisa(){
 
 let nama = document.getElementById("nama").value;
 let harga = parseFloat(document.getElementById("harga").value);
@@ -83,81 +93,92 @@ let terjual = parseFloat(document.getElementById("terjual").value);
 let kompetitor = parseFloat(document.getElementById("kompetitor").value);
 
 let skor = 0;
-
-// LOGIKA KHUSUS RUMAH TANGGA
 if(harga <= 200000) skor += 20;
 if(komisi >= 10) skor += 20;
 if(rating >= 4.7) skor += 20;
 if(terjual >= 500) skor += 20;
 if(kompetitor <= 200) skor += 20;
 
-let status = "";
-let warna = "";
-let angle = "";
-let hook = "";
-let script = "";
-
 if(skor >= 80){
-status = "🟢 POTENSI VIRAL KUAT";
-warna = "green";
-angle = "Fokus ke kemudahan & solusi masalah sehari-hari.";
-hook = "Stop scroll! Ini solusi simpel yang banyak orang belum tahu.";
+globalStatus="🟢 POTENSI VIRAL KUAT";
+globalWarna="green";
+globalAngle="Fokus ke solusi cepat & relatable.";
 }
 else if(skor >= 50){
-status = "🟡 LAYAK DICOBA";
-warna = "orange";
-angle = "Fokus ke harga terjangkau & fungsi praktis.";
-hook = "Produk ini ternyata cukup membantu lho.";
+globalStatus="🟡 LAYAK DICOBA";
+globalWarna="orange";
+globalAngle="Tekankan value & harga terjangkau.";
 }
 else{
-status = "🔴 RESIKO TINGGI";
-warna = "red";
-angle = "Kurang kuat untuk konten massal, kecuali ada angle unik.";
-hook = "Banyak yang belum tahu soal produk ini.";
+globalStatus="🔴 RESIKO TINGGI";
+globalWarna="red";
+globalAngle="Butuh storytelling unik.";
 }
 
-script = `
+globalData = {nama,harga,rating,terjual};
+
+generateHookBaru(); // langsung generate pertama
+}
+
+/* ============================= */
+
+function generateHookBaru(){
+
+if(!globalData.nama){
+alert("Isi dulu datanya dan klik Analisa ya 😁");
+return;
+}
+
+let hooks = [
+`Stop scroll! ${globalData.nama} ini bikin hidup lebih simpel!`,
+`Serius ini kepake banget 😭 ${globalData.nama} bikin rumah lebih praktis.`,
+`Baru tau ternyata ${globalData.nama} sepenting ini di rumah!`,
+`Kenapa baru nemu ${globalData.nama} sekarang sih?!`,
+`Produk kecil ini ternyata efeknya besar banget!`
+];
+
+let ctas = [
+`Cek link di keranjang sekarang juga.`,
+`Kalau butuh yang praktis kaya gini, langsung cek.`,
+`Udah banyak yang pake, jangan sampai ketinggalan.`,
+`Sebelum kehabisan, cek sekarang.`,
+`Klik linknya dan rasain sendiri manfaatnya.`
+];
+
+let randomHook = hooks[Math.floor(Math.random()*hooks.length)];
+let randomCTA = ctas[Math.floor(Math.random()*ctas.length)];
+
+let script = `
 🎬 HOOK:
-${hook}
+${randomHook}
 
 😩 MASALAH:
 Kadang hal kecil di rumah bikin ribet tanpa kita sadar.
 
 ✨ SOLUSI:
-${nama} ini bisa jadi solusi praktis untuk masalah itu.
+${globalData.nama} ini bisa jadi solusi praktis buat itu.
 
 🔥 FAKTA PRODUK:
-Harga sekitar Rp ${harga}
-Rating ${rating}
-Sudah terjual ${terjual}+ unit
+Harga Rp ${globalData.harga}
+Rating ${globalData.rating}
+Terjual ${globalData.terjual}+ unit
 
-🎯 ANGLE KONTEN:
-${angle}
+🎯 ANGLE:
+${globalAngle}
 
 💰 CTA:
-Kalau lagi cari yang seperti ini, cek link di keranjang sebelum kehabisan.
+${randomCTA}
 `;
 
-  kirimKeSheet(nama,harga,rating,terjual,script,status);
-  
 document.getElementById("output").innerHTML = `
-<div class="result ${warna}">
-<b>Skor:</b> ${skor}/100<br>
-<b>Status:</b> ${status}<br><br>
-<pre style="white-space:pre-wrap;">${script}</pre>
+<div class="result ${globalWarna}">
+<b>Status:</b> ${globalStatus}<br><br>
+<pre>${script}</pre>
 </div>
 `;
 
 }
 
 </script>
-
 </body>
 </html>
-
-
-
-
-
-
-
