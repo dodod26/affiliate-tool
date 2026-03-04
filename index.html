@@ -53,6 +53,25 @@ Dibuat oleh GaptekNiih
 <script>
 
 function analisa(){
+  async function kirimKeSheet(nama,harga,rating,terjual,script){
+
+const url = "https://script.google.com/macros/s/AKfycbxrUCoBw0FS4zLUH9rkvYmX_2wsp1giK-jOAkI27oVuBV8CBPHWAdzE8l-carVx631t/exec";
+
+const data = {
+  nama: nama,
+  harga: harga,
+  rating: rating,
+  terjual: terjual,
+  masalah: "Rumah tangga",
+  script: script
+};
+
+await fetch(url,{
+  method:"POST",
+  body: JSON.stringify(data)
+});
+
+}
 
 let nama = document.getElementById("nama").value;
 let harga = parseFloat(document.getElementById("harga").value);
@@ -117,6 +136,8 @@ ${angle}
 Kalau lagi cari yang seperti ini, cek link di keranjang sebelum kehabisan.
 `;
 
+  kirimKeSheet(nama,harga,rating,terjual,script);
+  
 document.getElementById("output").innerHTML = `
 <div class="result ${warna}">
 <b>Skor:</b> ${skor}/100<br>
@@ -131,3 +152,4 @@ document.getElementById("output").innerHTML = `
 
 </body>
 </html>
+
