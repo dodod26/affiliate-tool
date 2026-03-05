@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>GaptekNiih Viral Scanner</title>
+<title>GaptekNiih Viral Scanner AI</title>
 
 <style>
 body{font-family:Arial;margin:0;background:#f3f4f6;}
@@ -15,8 +15,6 @@ input{width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #dd
 button{padding:10px;background:#2563eb;color:white;border:none;border-radius:6px;margin-top:5px;cursor:pointer;}
 .result{padding:15px;border-radius:10px;margin-top:15px;}
 .green{background:#dcfce7;}
-.orange{background:#fef3c7;}
-.red{background:#fee2e2;}
 pre{white-space:pre-wrap;}
 </style>
 </head>
@@ -25,7 +23,7 @@ pre{white-space:pre-wrap;}
 
 <header>
 <h2>GaptekNiih Viral Scanner</h2>
-<p>Shopee Affiliate Script Generator</p>
+<p>Shopee Affiliate AI Script Generator</p>
 </header>
 
 <div class="container">
@@ -38,7 +36,7 @@ pre{white-space:pre-wrap;}
 <input id="rating" placeholder="Rating">
 <input id="terjual" placeholder="Jumlah Terjual">
 
-<button onclick="generate()">Generate Script</button>
+<button onclick="generate()">Generate Script AI</button>
 
 <div id="output"></div>
 
@@ -47,7 +45,11 @@ pre{white-space:pre-wrap;}
 
 <script>
 
-function generate(){
+const API_KEY="AIzaSyCglXm6OB6FO95VgkHJC_T3_hI6IP_xxtk"
+
+/* ===== GENERATE ===== */
+
+async function generate(){
 
 let nama=document.getElementById("nama").value
 let harga=document.getElementById("harga").value
@@ -58,6 +60,68 @@ if(!nama){
 alert("Isi nama produk dulu")
 return
 }
+
+document.getElementById("output").innerHTML="AI sedang membuat script..."
+
+let prompt=`
+Buatkan script konten video affiliate shopee yang viral.
+
+Produk: ${nama}
+Harga: ${harga}
+Rating: ${rating}
+Terjual: ${terjual}
+
+Format:
+
+HOOK
+VOICE OVER
+TEKS VIDEO
+JUDUL VIDEO
+CAPTION
+HASHTAG
+
+gunakan gaya bahasa santai seperti kreator tiktok indonesia.
+`
+
+try{
+
+let response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`,{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+contents:[{
+parts:[{text:prompt}]
+}]
+})
+
+})
+
+let data=await response.json()
+
+let hasil=data.candidates[0].content.parts[0].text
+
+tampilkan(hasil)
+
+kirimSheet(nama,harga,rating,terjual,hasil)
+
+}catch(e){
+
+/* fallback script lama kalau AI gagal */
+
+fallbackScript(nama,harga,rating,terjual)
+
+}
+
+}
+
+/* ===== FALLBACK SCRIPT ===== */
+
+function fallbackScript(nama,harga,rating,terjual){
 
 let hooks=[
 `Baru tau ternyata ada ${nama} kayak gini.`,
@@ -78,9 +142,9 @@ let ctas=[
 let captions=[
 `Baru tau ada produk kayak gini dan ternyata cukup kepake.`,
 `Produk simpel tapi ternyata membantu banget.`,
-`Kadang solusi rumah tangga itu sesimpel ini.`,
 `Barang kecil tapi ternyata sering dipakai.`,
-`Ini salah satu produk rumah yang underrated.`
+`Ini salah satu produk underrated.`,
+`Kadang solusi itu simpel.`
 ]
 
 let hashtags=[
@@ -98,14 +162,13 @@ let voiceover=hook + `
 
 Awalnya kupikir ini cuma produk biasa.
 
-Tapi ternyata cukup membantu dipakai di rumah.
+Tapi ternyata cukup membantu dipakai.
 
 Harganya sekitar Rp ${harga}.
 
 Ratingnya ${rating} dan yang beli sudah ${terjual}+.
 
 ` + cta
-
 
 let teksVideo=`
 Produk simpel tapi kepake
@@ -119,38 +182,57 @@ Terjual ${terjual}+
 Cek keranjang
 `
 
-let judul=`Produk rumah tangga yang ternyata kepake banget`
+let judul=`Produk yang ternyata kepake banget`
 
-/* tampilkan ke tools */
+let hasil=`
+
+VOICE OVER
+${voiceover}
+
+TEKS VIDEO
+${teksVideo}
+
+JUDUL VIDEO
+${judul}
+
+CAPTION
+${caption}
+
+HASHTAG
+${hashtag}
+
+`
+
+tampilkan(hasil)
+
+kirimSheet(nama,harga,rating,terjual,hasil)
+
+}
+
+/* ===== TAMPILKAN ===== */
+
+function tampilkan(teks){
 
 document.getElementById("output").innerHTML=`
 
 <div class="result green">
 
-<h4>Voice Over</h4>
-<pre>${voiceover}</pre>
+<h4>Hasil Script</h4>
 
-<h4>Teks Video</h4>
-<pre>${teksVideo}</pre>
-
-<h4>Judul Video</h4>
-<pre>${judul}</pre>
-
-<h4>Caption</h4>
-<pre>${caption}</pre>
-
-<h4>Hashtag</h4>
-<pre>${hashtag}</pre>
+<pre>${teks}</pre>
 
 </div>
 `
 
-/* kirim ke Google Sheet */
+}
+
+/* ===== KIRIM KE SHEET ===== */
+
+function kirimSheet(nama,harga,rating,terjual,hasil){
 
 fetch("https://script.google.com/macros/s/AKfycbxrUCoBw0FS4zLUH9rkvYmX_2wsp1giK-jOAkI27oVuBV8CBPHWAdzE8l-carVx631t/exec",{
 
 method:"POST",
-
 mode:"no-cors",
 
 body:JSON.stringify({
@@ -159,11 +241,7 @@ nama:nama,
 harga:harga,
 rating:rating,
 terjual:terjual,
-voiceover:voiceover,
-teksvideo:teksVideo,
-judul:judul,
-caption:caption,
-hashtag:hashtag
+script:hasil
 
 })
 
