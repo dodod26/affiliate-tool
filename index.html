@@ -199,32 +199,64 @@ let judulShopee=`
 Produk rumah tangga yang ternyata kepake banget
 `;
 
-let scriptGabung = `
+let scriptGabung=`
 
 VOICE OVER
 ${voiceover}
 
-----------------------------------
+----------------------------
 
 TEKS VIDEO
 ${teksVideo}
 
-----------------------------------
+----------------------------
 
 JUDUL VIDEO
 ${judulShopee}
 
-----------------------------------
+----------------------------
 
 CAPTION
 ${caption}
 
-----------------------------------
+----------------------------
 
 HASHTAG
 ${hashtag}
 
 `;
+
+/* OUTPUT KE LAYAR */
+
+document.getElementById("output").innerHTML=`
+
+<div class="result ${globalWarna}">
+
+<b>Status:</b> ${globalStatus}
+
+<br><br>
+
+<b>🎙 Voice Over</b>
+<pre>${voiceover}</pre>
+
+<b>📝 Teks Video</b>
+<pre>${teksVideo}</pre>
+
+<b>🎬 Judul Shopee Video</b>
+<pre>${judulShopee}</pre>
+
+<b>📄 Caption</b>
+<pre>${caption}</pre>
+
+<b>🔥 Hashtag</b>
+<pre>${hashtag}</pre>
+
+</div>
+
+`;
+
+/* KIRIM KE SHEET */
+
 kirimKeSheet(
 globalData.nama,
 globalData.harga,
@@ -240,4 +272,3 @@ globalStatus
 
 </body>
 </html>
-
