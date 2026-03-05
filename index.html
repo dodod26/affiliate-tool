@@ -88,23 +88,20 @@ Gunakan gaya bahasa santai seperti kreator TikTok Indonesia.
 try{
 
 let response = await fetch(
-`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`,
+"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=" + AIzaSyCor4gLSEWdAST7KsXtLow1SS3vRO2_OgY,
 {
-method:"POST",
+method: "POST",
 headers:{
 "Content-Type":"application/json"
 },
-body:JSON.stringify({
-contents:[
-{
-parts:[
-{ text: prompt }
-]
-}
-]
+body: JSON.stringify({
+contents: [{
+parts: [{
+text: prompt
+}]
+}]
 })
-}
-)
+});
 
 let data = await response.json()
 
@@ -237,6 +234,7 @@ status:status
 
 </body>
 </html>
+
 
 
 
