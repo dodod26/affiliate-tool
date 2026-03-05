@@ -1,75 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>GaptekNiih Viral Scanner AI</title>
-
-<style>
-body{font-family:Arial;margin:0;background:#f3f4f6;}
-header{background:#111827;color:white;text-align:center;padding:20px;}
-.container{max-width:900px;margin:auto;padding:15px;}
-.card{background:white;padding:15px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-input{width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #ddd;}
-textarea{width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #ddd;}
-button{padding:10px;background:#2563eb;color:white;border:none;border-radius:6px;margin-top:5px;cursor:pointer;}
-.result{padding:15px;border-radius:10px;margin-top:15px;}
-.green{background:#dcfce7;}
-.orange{background:#fef3c7;}
-.red{background:#fee2e2;}
-pre{white-space:pre-wrap;}
-</style>
-</head>
-
-<body>
-
-<header>
-<h2>GaptekNiih Viral Scanner</h2>
-<p>Shopee Affiliate AI Script Generator</p>
-</header>
-
-<div class="container">
-<div class="card">
-
-<h3>Input Data Produk</h3>
-
-<input id="nama" placeholder="Nama Produk">
-<input id="harga" placeholder="Harga">
-<input id="rating" placeholder="Rating">
-<input id="terjual" placeholder="Jumlah Terjual">
-
-<textarea id="masalah" placeholder="Masalah produk (opsional)"></textarea>
-
-<button onclick="generate()">Generate Script AI</button>
-
-<div id="output"></div>
-
-</div>
-</div>
-
 <script>
 
 const API_KEY="AIzaSyAbCw7li3GJ6ZiZz26V2T3RmlKYufbI68c"
-
-/* ================= STATUS PRODUK ================= */
-
-function cekStatus(rating,terjual){
-
-rating=parseFloat(rating)
-terjual=parseInt(terjual)
-
-if(rating>=4.7 && terjual>=500){
-return "Lanjut"
-}
-
-if(rating>=4.5 && terjual>=100){
-return "Perlu Dicoba"
-}
-
-return "Resiko"
-
-}
 
 /* ================= GENERATE ================= */
 
@@ -79,7 +10,6 @@ let nama=document.getElementById("nama").value
 let harga=document.getElementById("harga").value
 let rating=document.getElementById("rating").value
 let terjual=document.getElementById("terjual").value
-let masalah=document.getElementById("masalah").value
 
 if(!nama){
 alert("Isi nama produk dulu")
@@ -89,24 +19,24 @@ return
 document.getElementById("output").innerHTML="AI sedang membuat script..."
 
 let prompt=`
-Buatkan script konten video affiliate shopee yang viral.
+Buatkan script konten video affiliate Shopee yang menarik dan tidak kaku.
 
-Produk: ${nama}
+Data produk:
+Nama produk: ${nama}
 Harga: ${harga}
 Rating: ${rating}
 Terjual: ${terjual}
-Masalah Produk: ${masalah}
 
-Format:
+Buat dengan format:
 
 HOOK
-VOICE OVER
+VOICEOVER
 TEKS VIDEO
 JUDUL VIDEO
 CAPTION
 HASHTAG
 
-Gunakan gaya bahasa santai seperti kreator TikTok Indonesia.
+Gunakan bahasa santai seperti kreator TikTok Indonesia.
 `
 
 try{
@@ -127,111 +57,26 @@ parts:[{text:prompt}]
 
 let data=await response.json()
 
-let hasil=""
-
-try{
-hasil = data.candidates[0].content.parts.map(p=>p.text).join("")
-}catch(e){
-throw new Error("AI gagal membaca response")
+if(!data.candidates){
+throw new Error("AI error")
 }
 
-prosesHasil(nama,harga,rating,terjual,masalah,hasil)
+let hasil=data.candidates[0].content.parts[0].text
 
-}catch(e){
-
-console.log("AI gagal, pakai fallback")
-
-fallbackScript(nama,harga,rating,terjual,masalah)
-
-}
-
-}
-
-/* ================= FALLBACK ================= */
-
-function fallbackScript(nama,harga,rating,terjual,masalah){
-
-let hook=`Baru tau ternyata ada ${nama} kayak gini.`
-
-let voiceover=`
-
-${hook}
-
-Awalnya kupikir ini cuma produk biasa.
-
-Tapi ternyata cukup membantu dipakai.
-
-Harganya sekitar Rp ${harga}.
-
-Ratingnya ${rating} dan sudah terjual ${terjual}+.
-
-Link produk ada di keranjang.
-`
-
-let teksVideo=`
-
-Produk simpel tapi kepake
-
-Harga Rp ${harga}
-
-Rating ${rating}
-
-Terjual ${terjual}+
-
-Cek keranjang
-`
-
-let hasil=`
-
-VOICE OVER
-${voiceover}
-
-TEKS VIDEO
-${teksVideo}
-
-JUDUL VIDEO
-Produk simpel tapi kepake banget
-
-CAPTION
-Barang kecil tapi kepake.
-
-HASHTAG
-#racunshopee #produkviral #shopeefinds
-`
-
-prosesHasil(nama,harga,rating,terjual,masalah,hasil)
-
-}
-
-/* ================= PROSES HASIL ================= */
-
-function prosesHasil(nama,harga,rating,terjual,masalah,hasil){
-
-let status=cekStatus(rating,terjual)
-
-let warna="green"
-
-if(status=="Perlu Dicoba") warna="orange"
-if(status=="Resiko") warna="red"
+/* tampilkan */
 
 document.getElementById("output").innerHTML=`
 
-<div class="result ${warna}">
+<div class="result green">
 
-<h4>Status Produk: ${status}</h4>
+<h4>Script dari AI</h4>
 
 <pre>${hasil}</pre>
 
 </div>
 `
 
-kirimSheet(nama,harga,rating,terjual,masalah,hasil,status)
-
-}
-
-/* ================= KIRIM SHEET ================= */
-
-function kirimSheet(nama,harga,rating,terjual,masalah,script,status){
+/* kirim ke sheet */
 
 fetch("https://script.google.com/macros/s/AKfycbxrUCoBw0FS4zLUH9rkvYmX_2wsp1giK-jOAkI27oVuBV8CBPHWAdzE8l-carVx631t/exec",{
 
@@ -244,17 +89,87 @@ nama:nama,
 harga:harga,
 rating:rating,
 terjual:terjual,
-masalah:masalah,
-script:script,
-status:status
+script:hasil
 
 })
 
 })
+
+}catch(e){
+
+/* ================= FALLBACK SCRIPT ================= */
+
+let hooks=[
+`Baru tau ternyata ada ${nama} kayak gini.`,
+`Serius baru nemu produk ini sekarang.`,
+`Awalnya kupikir ini produk biasa.`,
+`Ternyata ada barang kayak gini juga.`,
+`Ini kecil tapi ternyata kepake banget.`
+]
+
+let hook=hooks[Math.floor(Math.random()*hooks.length)]
+
+let voiceover=hook + `
+
+Awalnya kupikir ini cuma produk biasa.
+
+Tapi ternyata cukup membantu dipakai di rumah.
+
+Harganya sekitar Rp ${harga}.
+
+Ratingnya ${rating} dan yang beli sudah ${terjual}+.
+
+Linknya aku taruh di keranjang.
+`
+
+let teksVideo=`
+Produk simpel tapi kepake
+
+Harga Rp ${harga}
+
+Rating ${rating}
+
+Terjual ${terjual}+
+
+Cek keranjang
+`
+
+let judul=`Produk yang ternyata kepake banget`
+
+let caption=`Barang kecil tapi ternyata sering dipakai.`
+
+let hashtag=`#racunshopee #produkviral #shopeeaffiliate`
+
+document.getElementById("output").innerHTML=`
+
+<div class="result orange">
+
+<h4>Script Fallback</h4>
+
+<pre>
+
+VOICEOVER
+${voiceover}
+
+TEKS VIDEO
+${teksVideo}
+
+JUDUL VIDEO
+${judul}
+
+CAPTION
+${caption}
+
+HASHTAG
+${hashtag}
+
+</pre>
+
+</div>
+`
+
+}
 
 }
 
 </script>
-
-</body>
-</html>
