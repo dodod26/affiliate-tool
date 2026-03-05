@@ -25,7 +25,7 @@ pre{white-space:pre-wrap;}
 
 <header>
 <h2>GaptekNiih Viral Scanner</h2>
-<p>Shopee Affiliate Script Generator</p>
+<p>Shopee Affiliate AI Generator</p>
 </header>
 
 <div class="container">
@@ -38,7 +38,7 @@ pre{white-space:pre-wrap;}
 <input id="rating" placeholder="Rating">
 <input id="terjual" placeholder="Jumlah Terjual">
 
-<button onclick="generate()">Generate Script</button>
+<button onclick="generate()">Analisa Produk</button>
 
 <div id="output"></div>
 
@@ -47,7 +47,11 @@ pre{white-space:pre-wrap;}
 
 <script>
 
-function generate(){
+const API_KEY="AIzaSyAbCw7li3GJ6ZiZz26V2T3RmlKYufbI68c"
+
+/* ================= GENERATE ================= */
+
+async function generate(){
 
 let nama=document.getElementById("nama").value
 let harga=document.getElementById("harga").value
@@ -59,98 +63,141 @@ alert("Isi nama produk dulu")
 return
 }
 
-let hooks=[
-`Baru tau ternyata ada ${nama} kayak gini.`,
-`Serius baru nemu produk ini sekarang.`,
-`Awalnya kupikir ini produk biasa.`,
-`Ternyata ada barang kayak gini juga.`,
-`Ini kecil tapi ternyata kepake banget.`
-]
+document.getElementById("output").innerHTML="AI sedang membuat konten..."
 
-let ctas=[
-`Linknya aku taruh di keranjang.`,
-`Kalau penasaran cek link keranjang.`,
-`Detail produk ada di keranjang.`,
-`Bisa cek produknya di keranjang.`,
-`Linknya ada di bawah ya.`
-]
+let prompt=`
+Kamu adalah kreator konten Shopee Affiliate Indonesia.
 
-let captions=[
-`Baru tau ada produk kayak gini dan ternyata cukup kepake.`,
-`Produk simpel tapi ternyata membantu banget.`,
-`Kadang solusi rumah tangga itu sesimpel ini.`,
-`Barang kecil tapi ternyata sering dipakai.`,
-`Ini salah satu produk rumah yang underrated.`
-]
+Produk: ${nama}
+Harga: ${harga}
+Rating: ${rating}
+Terjual: ${terjual}
 
-let hashtags=[
-`#racunshopee #produkviral #shopeefinds`,
-`#racunshopee #barangviral #shopeeaffiliate`,
-`#racunshopee #belanjashopee #produkviral`
-]
+Buatkan konten affiliate dengan format:
 
-let hook=hooks[Math.floor(Math.random()*hooks.length)]
-let cta=ctas[Math.floor(Math.random()*ctas.length)]
-let caption=captions[Math.floor(Math.random()*captions.length)]
-let hashtag=hashtags[Math.floor(Math.random()*hashtags.length)]
+MASALAH
+HOOK
+VOICE OVER
+CTA
+CAPTION
+HASHTAG
+STATUS PRODUK (GAS / COBA / RESIKO)
 
-let voiceover=hook + `
+Gunakan bahasa santai seperti konten TikTok.
+`
 
-Awalnya kupikir ini cuma produk biasa.
+try{
 
-Tapi ternyata cukup membantu dipakai di rumah.
+let response=await fetch(
+`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+contents:[{
+parts:[{text:prompt}]
+}]
+})
+})
+
+let data=await response.json()
+
+let hasil=data.candidates[0].content.parts[0].text
+
+tampilkan(hasil,"green")
+
+kirimSheet(nama,harga,rating,terjual,"AI Analisa",hasil,"AI")
+
+}catch(e){
+
+fallbackScript(nama,harga,rating,terjual)
+
+}
+
+}
+
+/* ================= FALLBACK ================= */
+
+function fallbackScript(nama,harga,rating,terjual){
+
+let masalah="Banyak orang butuh solusi praktis tapi tidak tahu produk ini."
+
+let hook=`Serius baru tau ada ${nama} kayak gini.`
+
+let voice=`
+Awalnya kupikir ini produk biasa.
+
+Tapi ternyata cukup kepake di rumah.
 
 Harganya sekitar Rp ${harga}.
 
 Ratingnya ${rating} dan yang beli sudah ${terjual}+.
-
-` + cta
-
-
-let teksVideo=`
-Produk simpel tapi kepake
-
-Harga Rp ${harga}
-
-Rating ${rating}
-
-Terjual ${terjual}+
-
-Cek keranjang
 `
 
-let judul=`Produk rumah tangga yang ternyata kepake banget`
+let cta="Linknya aku taruh di keranjang ya."
 
-/* tampilkan ke tools */
+let caption="Baru tau ternyata ada produk sesimpel ini tapi kepake banget."
+
+let hashtag="#racunshopee #shopeefinds #produkviral #shopeeaffiliate"
+
+let status="COBA"
+
+let script=`
+
+MASALAH
+${masalah}
+
+HOOK
+${hook}
+
+VOICE OVER
+${voice}
+
+CTA
+${cta}
+
+CAPTION
+${caption}
+
+HASHTAG
+${hashtag}
+
+STATUS
+${status}
+
+`
+
+tampilkan(script,"orange")
+
+kirimSheet(nama,harga,rating,terjual,masalah,script,status)
+
+}
+
+/* ================= TAMPILKAN ================= */
+
+function tampilkan(teks,warna){
 
 document.getElementById("output").innerHTML=`
 
-<div class="result green">
-
-<h4>Voice Over</h4>
-<pre>${voiceover}</pre>
-
-<h4>Teks Video</h4>
-<pre>${teksVideo}</pre>
-
-<h4>Judul Video</h4>
-<pre>${judul}</pre>
-
-<h4>Caption</h4>
-<pre>${caption}</pre>
-
-<h4>Hashtag</h4>
-<pre>${hashtag}</pre>
-
+<div class="result ${warna}">
+<pre>${teks}</pre>
 </div>
+
 `
 
-/* kirim ke Google Sheet */
+}
+
+/* ================= GOOGLE SHEET ================= */
+
+function kirimSheet(nama,harga,rating,terjual,masalah,script,status){
+
+let tanggal=new Date().toLocaleString()
 
 fetch("https://script.google.com/macros/s/AKfycbxrUCoBw0FS4zLUH9rkvYmX_2wsp1giK-jOAkI27oVuBV8CBPHWAdzE8l-carVx631t/exec",{
 
 method:"POST",
-
 mode:"no-cors",
 
 body:JSON.stringify({
@@ -159,11 +206,10 @@ nama:nama,
 harga:harga,
 rating:rating,
 terjual:terjual,
-voiceover:voiceover,
-teksvideo:teksVideo,
-judul:judul,
-caption:caption,
-hashtag:hashtag
+masalah:masalah,
+script:script,
+tanggal:tanggal,
+status:status
 
 })
 
