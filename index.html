@@ -121,114 +121,97 @@ generateHookBaru();
 function generateHookBaru(){
 
 if(!globalData.nama){
-alert("Isi dulu datanya dan klik Analisa ya.");
+alert("Isi dulu datanya dan klik Analisa ya 😁");
 return;
 }
 
-let variations = [
-
-function(){
-return {
-voice: `
-Belakangan ini ada satu detail kecil di rumah yang cukup mengganggu.
-
-Awalnya terlihat sepele.
-Namun lama-lama terasa juga dampaknya dalam aktivitas sehari-hari.
-
-Akhirnya banyak orang mulai mencari solusi yang lebih praktis.
-Salah satunya dengan menggunakan ${globalData.nama}.
-
-Penggunaannya sederhana.
-Tidak ribet.
-Dan cukup membantu membuat area terasa lebih rapi.
-
-Harganya sekitar Rp ${globalData.harga}.
-Ratingnya ${globalData.rating}.
-Sudah terjual lebih dari ${globalData.terjual} unit.
-
-Jika kamu ingin solusi yang lebih praktis di rumah,
-produk ini bisa jadi salah satu pertimbangan.
-`,
-overlay: `
-TEKS OVERLAY SHOPEE
-
-0–3 detik:
-Detail kecil, efek besar
-
-3–10 detik:
-Sering bikin area kurang rapi
-
-10–20 detik:
-Solusi praktis dan tidak ribet
-
-20–27 detik:
-Harga terjangkau, rating tinggi
-
-27–30 detik:
-Cek detailnya di keranjang
-`
-}
-},
-
-function(){
-return {
-voice: `
-Kadang kenyamanan di rumah terganggu hanya karena hal sederhana.
-
-Tidak terasa penting di awal.
-Tapi cukup memengaruhi aktivitas sehari-hari.
-
-Karena itu banyak orang beralih ke solusi yang lebih efisien,
-seperti ${globalData.nama} ini.
-
-Desainnya simpel.
-Mudah digunakan.
-Dan membantu membuat semuanya lebih tertata.
-
-Dengan harga sekitar Rp ${globalData.harga},
-rating ${globalData.rating},
-dan penjualan lebih dari ${globalData.terjual} unit,
-
-produk ini cukup menarik untuk dipertimbangkan.
-`,
-overlay: `
-TEKS OVERLAY SHOPEE
-
-0–3 detik:
-Awalnya terlihat biasa
-
-3–10 detik:
-Ternyata cukup mengganggu
-
-10–20 detik:
-Lebih praktis digunakan
-
-20–27 detik:
-Sudah banyak yang pakai
-
-27–30 detik:
-Lihat informasinya di link
-`
-}
-}
-
+let hooks = [
+`Jujur aku baru tau ada ${globalData.nama} kayak gini.`,
+`Awalnya kupikir ${globalData.nama} ini biasa aja.`,
+`Serius ini baru nemu sekarang.`,
+`Ternyata ada produk kayak gini juga.`,
+`Ini kecil tapi ternyata cukup kepake.`
 ];
 
-let randomVariation = variations[Math.floor(Math.random()*variations.length)];
-let result = randomVariation();
+let ctas = [
+`Kalau kamu butuh, cek link di keranjang.`,
+`Aku taruh link produknya di keranjang.`,
+`Kalau penasaran bisa cek langsung.`,
+`Link produknya ada di keranjang ya.`,
+`Bisa cek detailnya di link keranjang.`
+];
 
-let finalOutput = `
-SCRIPT VOICE OVER
+let randomHook = hooks[Math.floor(Math.random()*hooks.length)];
+let randomCTA = ctas[Math.floor(Math.random()*ctas.length)];
 
-${result.voice}
+let voiceover = `
+${randomHook}
 
-${result.overlay}
+Awalnya kupikir ini cuma produk biasa.
+
+Tapi ternyata cukup membantu buat dipakai di rumah.
+
+Apalagi harganya cuma sekitar Rp ${globalData.harga}.
+
+Ratingnya juga ${globalData.rating} dan yang beli sudah lebih dari ${globalData.terjual}.
+
+Jadi cukup menarik juga buat dicoba.
+
+${randomCTA}
 `;
+
+let teksVideo = `
+Produk simpel tapi kepake
+
+Harga Rp ${globalData.harga}
+Rating ${globalData.rating}
+
+Sudah dibeli ${globalData.terjual}+
+
+Cek keranjang sekarang
+`;
+
+let judulShopee = `
+Produk rumah tangga yang ternyata kepake banget
+`;
+
+let caption = `
+Baru tau ternyata ada produk kayak gini.
+
+Harganya masih terjangkau dan yang beli sudah banyak juga.
+
+Kalau kamu lagi cari solusi praktis di rumah, ini menarik buat dicoba.
+`;
+
+let hashtag = `
+#racunshopee
+#shopeefinds
+#produkviral
+#belanjashopee
+#shopeeaffiliate
+`;
+
+let scriptGabung = voiceover;
 
 document.getElementById("output").innerHTML = `
 <div class="result ${globalWarna}">
 <b>Status:</b> ${globalStatus}<br><br>
-<pre>${finalOutput}</pre>
+
+<b>🎙 Voice Over</b>
+<pre>${voiceover}</pre>
+
+<b>📝 Teks Video</b>
+<pre>${teksVideo}</pre>
+
+<b>🎬 Judul Shopee Video</b>
+<pre>${judulShopee}</pre>
+
+<b>📄 Caption</b>
+<pre>${caption}</pre>
+
+<b>🔥 Hashtag</b>
+<pre>${hashtag}</pre>
+
 </div>
 `;
 
@@ -237,7 +220,7 @@ globalData.nama,
 globalData.harga,
 globalData.rating,
 globalData.terjual,
-result.voice,
+scriptGabung,
 globalStatus
 );
 
@@ -246,6 +229,7 @@ globalStatus
 </script>
 </body>
 </html>
+
 
 
 
