@@ -2,43 +2,36 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>GaptekNiih Viral Scanner</title>
+<title>GaptekNiih Viral Scanner AI</title>
 
 <style>
-body{font-family:Arial;margin:0;background:#f3f4f6;}
-header{background:#111827;color:white;text-align:center;padding:20px;}
-.container{max-width:900px;margin:auto;padding:15px;}
-.card{background:white;padding:15px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-input{width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #ddd;}
-button{padding:10px;background:#2563eb;color:white;border:none;border-radius:6px;margin-top:5px;cursor:pointer;}
-.result{padding:15px;border-radius:10px;margin-top:15px;}
-.green{background:#dcfce7;}
-.orange{background:#fef3c7;}
-.red{background:#fee2e2;}
-pre{white-space:pre-wrap;}
+body{font-family:Arial;background:#f3f4f6;margin:0}
+header{background:#111827;color:white;padding:20px;text-align:center}
+.container{max-width:800px;margin:auto;padding:20px}
+.card{background:white;padding:20px;border-radius:10px}
+input{width:100%;padding:10px;margin:5px 0}
+button{padding:10px;background:#2563eb;color:white;border:none;border-radius:6px}
+.result{margin-top:20px;padding:20px;background:#dcfce7;border-radius:10px}
+pre{white-space:pre-wrap}
 </style>
+
 </head>
 
 <body>
 
 <header>
-<h2>GaptekNiih Viral Scanner</h2>
-<p>Shopee Affiliate AI Generator</p>
+<h2>GaptekNiih Viral Scanner AI</h2>
 </header>
 
 <div class="container">
 <div class="card">
-
-<h3>Input Data Produk</h3>
 
 <input id="nama" placeholder="Nama Produk">
 <input id="harga" placeholder="Harga">
 <input id="rating" placeholder="Rating">
 <input id="terjual" placeholder="Jumlah Terjual">
 
-<button onclick="generate()">Analisa Produk</button>
+<button onclick="generate()">Analisa & Generate Script</button>
 
 <div id="output"></div>
 
@@ -47,9 +40,7 @@ pre{white-space:pre-wrap;}
 
 <script>
 
-const API_KEY="AIzaSyCor4gLSEWdAST7KsXtLow1SS3vRO2_OgY"
-
-/* ================= GENERATE ================= */
+const URL_SCRIPT="https://script.google.com/macros/s/AKfycbyx79jd0WkDSifTWiomOeFuyAKnGjf3Whu3x_wbAli4OwoMjlsVQYZ6xufhd6U6Wdci/exec"
 
 async function generate(){
 
@@ -58,175 +49,33 @@ let harga=document.getElementById("harga").value
 let rating=document.getElementById("rating").value
 let terjual=document.getElementById("terjual").value
 
-if(!nama){
-alert("Isi nama produk dulu")
-return
-}
-
 document.getElementById("output").innerHTML="AI sedang membuat script..."
 
-let prompt = `
-Buatkan script konten video Shopee Affiliate.
-
-Produk: ${nama}
-Harga: ${harga}
-Rating: ${rating}
-Terjual: ${terjual}
-
-Format:
-
-HOOK
-VOICE OVER
-TEKS VIDEO
-JUDUL VIDEO
-CAPTION
-HASHTAG
-
-Gunakan gaya bahasa santai seperti kreator TikTok Indonesia.
-`
-
-try{
-
-let response = await fetch(
-"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=" + AIzaSyCor4gLSEWdAST7KsXtLow1SS3vRO2_OgY,
-{
-method: "POST",
-headers:{
-"Content-Type":"application/json"
-},
-body: JSON.stringify({
-contents: [{
-parts: [{
-text: prompt
-}]
-}]
-})
-});
-
-let data = await response.json()
-
-console.log(data)   // ini buat lihat error di console
-
-if(data.candidates && data.candidates.length > 0){
-
-let hasil = data.candidates[0].content.parts[0].text
-
-tampilkan(hasil)
-
-kirimSheet(nama,harga,rating,terjual,hasil)
-
-}else{
-
-throw new Error("AI tidak mengembalikan hasil")
-
-}
-
-}catch(err){
-
-console.log("AI error:",err)
-
-fallbackScript(nama,harga,rating,terjual)
-
-}
-
-}
-
-/* ================= FALLBACK ================= */
-
-function fallbackScript(nama,harga,rating,terjual){
-
-let masalah="Banyak orang butuh solusi praktis tapi tidak tahu produk ini."
-
-let hook=`Serius baru tau ada ${nama} kayak gini.`
-
-let voice=`
-Awalnya kupikir ini produk biasa.
-
-Tapi ternyata cukup kepake di rumah.
-
-Harganya sekitar Rp ${harga}.
-
-Ratingnya ${rating} dan yang beli sudah ${terjual}+.
-`
-
-let cta="Linknya aku taruh di keranjang ya."
-
-let caption="Baru tau ternyata ada produk sesimpel ini tapi kepake banget."
-
-let hashtag="#racunshopee #shopeefinds #produkviral #shopeeaffiliate"
-
-let status="COBA"
-
-let script=`
-
-MASALAH
-${masalah}
-
-HOOK
-${hook}
-
-VOICE OVER
-${voice}
-
-CTA
-${cta}
-
-CAPTION
-${caption}
-
-HASHTAG
-${hashtag}
-
-STATUS
-${status}
-
-`
-
-tampilkan(script,"orange")
-
-kirimSheet(nama,harga,rating,terjual,masalah,script,status)
-
-}
-
-/* ================= TAMPILKAN ================= */
-
-function tampilkan(teks,warna){
-
-document.getElementById("output").innerHTML=`
-
-<div class="result ${warna}">
-<pre>${teks}</pre>
-</div>
-
-`
-
-}
-
-/* ================= GOOGLE SHEET ================= */
-
-function kirimSheet(nama,harga,rating,terjual,masalah,script,status){
-
-let tanggal=new Date().toLocaleString()
-
-fetch("https://script.google.com/macros/s/AKfycbxrUCoBw0FS4zLUH9rkvYmX_2wsp1giK-jOAkI27oVuBV8CBPHWAdzE8l-carVx631t/exec",{
-
+let res=await fetch(URL_SCRIPT,{
 method:"POST",
-mode:"no-cors",
-
 body:JSON.stringify({
-
 nama:nama,
 harga:harga,
 rating:rating,
-terjual:terjual,
-masalah:masalah,
-script:script,
-tanggal:tanggal,
-status:status
-
+terjual:terjual
+})
 })
 
-})
+let data=await res.json()
+
+document.getElementById("output").innerHTML=`
+
+<div class="result">
+
+<h3>Status Produk</h3>
+<b>${data.status}</b>
+
+<h3>Script Konten</h3>
+
+<pre>${data.script}</pre>
+
+</div>
+`
 
 }
 
@@ -234,9 +83,3 @@ status:status
 
 </body>
 </html>
-
-
-
-
-
-
