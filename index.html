@@ -1,8 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GaptekNiih Viral Scanner</title>
+
+<style>
+body{font-family:Arial;margin:0;background:#f3f4f6;}
+header{background:#111827;color:white;text-align:center;padding:20px;}
+.container{max-width:900px;margin:auto;padding:15px;}
+.card{background:white;padding:15px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+input{width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #ddd;}
+button{padding:10px;background:#2563eb;color:white;border:none;border-radius:6px;margin-top:5px;cursor:pointer;}
+.result{padding:15px;border-radius:10px;margin-top:15px;}
+.green{background:#dcfce7;}
+.orange{background:#fef3c7;}
+.red{background:#fee2e2;}
+pre{white-space:pre-wrap;}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>GaptekNiih Viral Scanner</h2>
+<p>Shopee Affiliate AI Script Generator</p>
+</header>
+
+<div class="container">
+<div class="card">
+
+<h3>Input Data Produk</h3>
+
+<input id="nama" placeholder="Nama Produk">
+<input id="harga" placeholder="Harga">
+<input id="rating" placeholder="Rating">
+<input id="terjual" placeholder="Jumlah Terjual">
+
+<button onclick="generate()">Analisa Produk</button>
+
+<div id="output"></div>
+
+</div>
+</div>
+
 <script>
 
 const API_KEY="AIzaSyAbCw7li3GJ6ZiZz26V2T3RmlKYufbI68c"
 
-/* ================= GENERATE ================= */
+/* ================== GENERATE ================== */
 
 async function generate(){
 
@@ -16,27 +63,23 @@ alert("Isi nama produk dulu")
 return
 }
 
-document.getElementById("output").innerHTML="AI sedang membuat script..."
+document.getElementById("output").innerHTML="AI sedang menganalisa produk..."
 
 let prompt=`
-Buatkan script konten video affiliate Shopee yang menarik dan tidak kaku.
+Analisa produk shopee affiliate.
 
-Data produk:
-Nama produk: ${nama}
+Produk: ${nama}
 Harga: ${harga}
 Rating: ${rating}
 Terjual: ${terjual}
 
-Buat dengan format:
+Buatkan:
 
-HOOK
-VOICEOVER
-TEKS VIDEO
-JUDUL VIDEO
-CAPTION
-HASHTAG
+1 Masalah yang sering dialami orang
+Script video affiliate (storytelling natural)
+Status produk: GAS / COBA / RESIKO
 
-Gunakan bahasa santai seperti kreator TikTok Indonesia.
+gunakan gaya bahasa santai seperti kreator tiktok indonesia.
 `
 
 try{
@@ -57,26 +100,81 @@ parts:[{text:prompt}]
 
 let data=await response.json()
 
-if(!data.candidates){
-throw new Error("AI error")
-}
-
 let hasil=data.candidates[0].content.parts[0].text
 
-/* tampilkan */
+tampilkan(hasil,"green")
+
+kirimSheet(nama,harga,rating,terjual,"AI Analisa",hasil,"AI")
+
+}catch(e){
+
+fallbackScript(nama,harga,rating,terjual)
+
+}
+
+}
+
+/* ================== FALLBACK ================== */
+
+function fallbackScript(nama,harga,rating,terjual){
+
+let masalah="Orang sering butuh produk praktis tapi tidak tahu solusi simpel."
+
+let script=`
+Baru tau ternyata ada ${nama} kayak gini.
+
+Awalnya kupikir ini produk biasa.
+
+Tapi ternyata cukup membantu dipakai di rumah.
+
+Harganya sekitar Rp ${harga}.
+
+Ratingnya ${rating} dan yang beli sudah ${terjual}+.
+
+Linknya aku taruh di keranjang.
+`
+
+let status="COBA"
+
+let hasil=`
+
+MASALAH
+${masalah}
+
+SCRIPT
+${script}
+
+STATUS PRODUK
+${status}
+
+`
+
+tampilkan(hasil,"orange")
+
+kirimSheet(nama,harga,rating,terjual,masalah,script,status)
+
+}
+
+/* ================== TAMPILKAN ================== */
+
+function tampilkan(teks,warna){
 
 document.getElementById("output").innerHTML=`
 
-<div class="result green">
+<div class="result ${warna}">
 
-<h4>Script dari AI</h4>
-
-<pre>${hasil}</pre>
+<pre>${teks}</pre>
 
 </div>
 `
 
-/* kirim ke sheet */
+}
+
+/* ================== GOOGLE SHEET ================== */
+
+function kirimSheet(nama,harga,rating,terjual,masalah,script,status){
+
+let tanggal=new Date().toLocaleString()
 
 fetch("https://script.google.com/macros/s/AKfycbxrUCoBw0FS4zLUH9rkvYmX_2wsp1giK-jOAkI27oVuBV8CBPHWAdzE8l-carVx631t/exec",{
 
@@ -89,87 +187,18 @@ nama:nama,
 harga:harga,
 rating:rating,
 terjual:terjual,
-script:hasil
+masalah:masalah,
+script:script,
+tanggal:tanggal,
+status:status
 
 })
 
 })
-
-}catch(e){
-
-/* ================= FALLBACK SCRIPT ================= */
-
-let hooks=[
-`Baru tau ternyata ada ${nama} kayak gini.`,
-`Serius baru nemu produk ini sekarang.`,
-`Awalnya kupikir ini produk biasa.`,
-`Ternyata ada barang kayak gini juga.`,
-`Ini kecil tapi ternyata kepake banget.`
-]
-
-let hook=hooks[Math.floor(Math.random()*hooks.length)]
-
-let voiceover=hook + `
-
-Awalnya kupikir ini cuma produk biasa.
-
-Tapi ternyata cukup membantu dipakai di rumah.
-
-Harganya sekitar Rp ${harga}.
-
-Ratingnya ${rating} dan yang beli sudah ${terjual}+.
-
-Linknya aku taruh di keranjang.
-`
-
-let teksVideo=`
-Produk simpel tapi kepake
-
-Harga Rp ${harga}
-
-Rating ${rating}
-
-Terjual ${terjual}+
-
-Cek keranjang
-`
-
-let judul=`Produk yang ternyata kepake banget`
-
-let caption=`Barang kecil tapi ternyata sering dipakai.`
-
-let hashtag=`#racunshopee #produkviral #shopeeaffiliate`
-
-document.getElementById("output").innerHTML=`
-
-<div class="result orange">
-
-<h4>Script Fallback</h4>
-
-<pre>
-
-VOICEOVER
-${voiceover}
-
-TEKS VIDEO
-${teksVideo}
-
-JUDUL VIDEO
-${judul}
-
-CAPTION
-${caption}
-
-HASHTAG
-${hashtag}
-
-</pre>
-
-</div>
-`
-
-}
 
 }
 
 </script>
+
+</body>
+</html>
