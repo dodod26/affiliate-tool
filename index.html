@@ -11,7 +11,7 @@ header{background:#111827;color:white;text-align:center;padding:20px;}
 .container{max-width:900px;margin:auto;padding:15px;}
 .card{background:white;padding:15px;margin-bottom:15px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
 input{width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #ddd;}
-button{padding:10px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;margin-top:5px;}
+button{padding:10px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;margin-top:5px;margin-right:5px;}
 .result{padding:10px;border-radius:8px;margin-top:10px;}
 .green{background:#dcfce7;}
 .orange{background:#fef3c7;}
@@ -57,52 +57,57 @@ let globalStatus = "";
 let globalWarna = "";
 
 /* ============================= */
+/* KIRIM KE GOOGLE SHEET */
+/* ============================= */
 
 async function kirimKeSheet(nama,harga,rating,terjual,script,status){
 
-const url = "https://script.google.com/macros/s/AKfycbxrUCoBw0FS4zLUH9rkvYmX_2wsp1giK-jOAkI27oVuBV8CBPHWAdzE8l-carVx631t/exec";
+const url="https://script.google.com/macros/s/AKfycbxrUCoBw0FS4zLUH9rkvYmX_2wsp1giK-jOAkI27oVuBV8CBPHWAdzE8l-carVx631t/exec";
 
-const data = {
-  nama: nama,
-  harga: harga,
-  rating: rating,
-  terjual: terjual,
-  masalah: "Rumah tangga",
-  script: script,
-  status: status
+const data={
+nama:nama,
+harga:harga,
+rating:rating,
+terjual:terjual,
+masalah:"Rumah tangga",
+script:script,
+status:status
 };
 
 await fetch(url,{
-  method:"POST",
-  mode:"no-cors",
-  body: JSON.stringify(data)
+method:"POST",
+mode:"no-cors",
+body:JSON.stringify(data)
 });
 
 }
 
 /* ============================= */
+/* ANALISA PRODUK */
+/* ============================= */
 
 function analisa(){
 
-let nama = document.getElementById("nama").value;
-let harga = parseFloat(document.getElementById("harga").value);
-let komisi = parseFloat(document.getElementById("komisi").value);
-let rating = parseFloat(document.getElementById("rating").value);
-let terjual = parseFloat(document.getElementById("terjual").value);
-let kompetitor = parseFloat(document.getElementById("kompetitor").value);
+let nama=document.getElementById("nama").value;
+let harga=parseFloat(document.getElementById("harga").value);
+let komisi=parseFloat(document.getElementById("komisi").value);
+let rating=parseFloat(document.getElementById("rating").value);
+let terjual=parseFloat(document.getElementById("terjual").value);
+let kompetitor=parseFloat(document.getElementById("kompetitor").value);
 
-let skor = 0;
-if(harga <= 200000) skor += 20;
-if(komisi >= 10) skor += 20;
-if(rating >= 4.7) skor += 20;
-if(terjual >= 500) skor += 20;
-if(kompetitor <= 200) skor += 20;
+let skor=0;
 
-if(skor >= 80){
+if(harga<=200000) skor+=20;
+if(komisi>=10) skor+=20;
+if(rating>=4.7) skor+=20;
+if(terjual>=500) skor+=20;
+if(kompetitor<=200) skor+=20;
+
+if(skor>=80){
 globalStatus="POTENSI VIRAL KUAT";
 globalWarna="green";
 }
-else if(skor >= 50){
+else if(skor>=50){
 globalStatus="LAYAK DICOBA";
 globalWarna="orange";
 }
@@ -111,90 +116,94 @@ globalStatus="RESIKO TINGGI";
 globalWarna="red";
 }
 
-globalData = {nama,harga,rating,terjual};
+globalData={nama,harga,rating,terjual};
 
 generateHookBaru();
+
 }
 
+/* ============================= */
+/* GENERATE SCRIPT */
 /* ============================= */
 
 function generateHookBaru(){
 
 if(!globalData.nama){
-alert("Isi dulu datanya dan klik Analisa ya 😁");
+alert("Isi data dulu lalu klik Analisa 😁");
 return;
 }
 
-let hooks = [
-`Jujur aku baru tau ada ${globalData.nama} kayak gini.`,
-`Awalnya kupikir ${globalData.nama} ini biasa aja.`,
-`Serius ini baru nemu sekarang.`,
-`Ternyata ada produk kayak gini juga.`,
-`Ini kecil tapi ternyata cukup kepake.`
+let hooks=[
+`Baru tau ternyata ada ${globalData.nama} kayak gini.`,
+`Serius baru nemu produk ini sekarang.`,
+`Awalnya kupikir ini produk biasa.`,
+`Ternyata ada barang kayak gini juga.`,
+`Ini kecil tapi ternyata kepake banget.`
 ];
 
-let ctas = [
-`Kalau kamu butuh, cek link di keranjang.`,
-`Aku taruh link produknya di keranjang.`,
-`Kalau penasaran bisa cek langsung.`,
-`Link produknya ada di keranjang ya.`,
-`Bisa cek detailnya di link keranjang.`
+let ctas=[
+`Linknya aku taruh di keranjang.`,
+`Kalau penasaran cek link keranjang.`,
+`Detail produk ada di keranjang.`,
+`Bisa cek produknya di keranjang.`,
+`Linknya ada di bawah ya.`
 ];
 
-let randomHook = hooks[Math.floor(Math.random()*hooks.length)];
-let randomCTA = ctas[Math.floor(Math.random()*ctas.length)];
+let captions=[
+`Baru tau ada produk kayak gini dan ternyata cukup kepake di rumah.`,
+`Produk simpel tapi ternyata membantu banget.`,
+`Kadang solusi rumah tangga itu sesimpel ini.`,
+`Barang kecil tapi ternyata sering dipakai.`,
+`Ini salah satu produk rumah yang underrated.`
+];
 
-let voiceover = `
-${randomHook}
+let hashtags=[
+`#racunshopee #produkviral #shopeefinds #belanjashopee`,
+`#racunshopee #barangviral #shopeehaul #shopeeaffiliate`,
+`#racunshopee #produkshopee #barangrumah #belanjashopee`,
+`#racunshopee #produkviral #tipsrumah #shopeefinds`
+];
+
+let hook=hooks[Math.floor(Math.random()*hooks.length)];
+let cta=ctas[Math.floor(Math.random()*ctas.length)];
+let caption=captions[Math.floor(Math.random()*captions.length)];
+let hashtag=hashtags[Math.floor(Math.random()*hashtags.length)];
+
+let voiceover=`
+${hook}
 
 Awalnya kupikir ini cuma produk biasa.
 
-Tapi ternyata cukup membantu buat dipakai di rumah.
+Tapi ternyata cukup membantu dipakai di rumah.
 
-Apalagi harganya cuma sekitar Rp ${globalData.harga}.
+Harganya sekitar Rp ${globalData.harga}.
 
-Ratingnya juga ${globalData.rating} dan yang beli sudah lebih dari ${globalData.terjual}.
+Ratingnya ${globalData.rating} dan yang beli sudah ${globalData.terjual}+.
 
-Jadi cukup menarik juga buat dicoba.
-
-${randomCTA}
+${cta}
 `;
 
-let teksVideo = `
+let teksVideo=`
 Produk simpel tapi kepake
 
 Harga Rp ${globalData.harga}
+
 Rating ${globalData.rating}
 
 Sudah dibeli ${globalData.terjual}+
 
-Cek keranjang sekarang
+Cek keranjang
 `;
 
-let judulShopee = `
+let judulShopee=`
 Produk rumah tangga yang ternyata kepake banget
 `;
 
-let caption = `
-Baru tau ternyata ada produk kayak gini.
+let scriptGabung=voiceover;
 
-Harganya masih terjangkau dan yang beli sudah banyak juga.
-
-Kalau kamu lagi cari solusi praktis di rumah, ini menarik buat dicoba.
-`;
-
-let hashtag = `
-#racunshopee
-#shopeefinds
-#produkviral
-#belanjashopee
-#shopeeaffiliate
-`;
-
-let scriptGabung = voiceover;
-
-document.getElementById("output").innerHTML = `
+document.getElementById("output").innerHTML=`
 <div class="result ${globalWarna}">
+
 <b>Status:</b> ${globalStatus}<br><br>
 
 <b>🎙 Voice Over</b>
@@ -227,12 +236,6 @@ globalStatus
 }
 
 </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
