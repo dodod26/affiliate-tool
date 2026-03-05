@@ -5,14 +5,69 @@
 <title>GaptekNiih Viral Scanner AI</title>
 
 <style>
-body{font-family:Arial;background:#f3f4f6;margin:0}
-header{background:#111827;color:white;padding:20px;text-align:center}
-.container{max-width:800px;margin:auto;padding:20px}
-.card{background:white;padding:20px;border-radius:10px}
-input{width:100%;padding:10px;margin:5px 0}
-button{padding:10px;background:#2563eb;color:white;border:none;border-radius:6px}
-.result{margin-top:20px;padding:20px;background:#dcfce7;border-radius:10px}
-pre{white-space:pre-wrap}
+body{
+font-family:Arial;
+background:#f3f4f6;
+margin:0
+}
+
+header{
+background:#111827;
+color:white;
+padding:20px;
+text-align:center
+}
+
+.container{
+max-width:800px;
+margin:auto;
+padding:20px
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px
+}
+
+input{
+width:100%;
+padding:10px;
+margin:6px 0;
+border:1px solid #ddd;
+border-radius:6px
+}
+
+button{
+padding:12px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer
+}
+
+button:hover{
+background:#1e40af
+}
+
+.result{
+margin-top:20px;
+padding:20px;
+background:#dcfce7;
+border-radius:10px
+}
+
+.loading{
+margin-top:20px;
+padding:20px;
+background:#fef3c7;
+border-radius:10px
+}
+
+pre{
+white-space:pre-wrap
+}
 </style>
 
 </head>
@@ -21,21 +76,29 @@ pre{white-space:pre-wrap}
 
 <header>
 <h2>GaptekNiih Viral Scanner AI</h2>
+<p>Shopee Affiliate Script Generator</p>
 </header>
 
 <div class="container">
+
 <div class="card">
 
+<h3>Input Data Produk</h3>
+
 <input id="nama" placeholder="Nama Produk">
-<input id="harga" placeholder="Harga">
-<input id="rating" placeholder="Rating">
-<input id="terjual" placeholder="Jumlah Terjual">
+
+<input id="harga" placeholder="Harga (contoh: 45000)">
+
+<input id="rating" placeholder="Rating (contoh: 4.8)">
+
+<input id="terjual" placeholder="Jumlah Terjual (contoh: 1200)">
 
 <button onclick="generate()">Analisa & Generate Script</button>
 
 <div id="output"></div>
 
 </div>
+
 </div>
 
 <script>
@@ -49,10 +112,25 @@ let harga=document.getElementById("harga").value
 let rating=document.getElementById("rating").value
 let terjual=document.getElementById("terjual").value
 
-document.getElementById("output").innerHTML="AI sedang membuat script..."
+if(!nama){
+alert("Isi nama produk dulu")
+return
+}
 
-let res=await fetch(URL_SCRIPT,{
+document.getElementById("output").innerHTML=
+`
+<div class="loading">
+AI sedang membuat script...
+</div>
+`
+
+try{
+
+let response=await fetch(URL_SCRIPT,{
 method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
 body:JSON.stringify({
 nama:nama,
 harga:harga,
@@ -61,10 +139,10 @@ terjual:terjual
 })
 })
 
-let data=await res.json()
+let data=await response.json()
 
-document.getElementById("output").innerHTML=`
-
+document.getElementById("output").innerHTML=
+`
 <div class="result">
 
 <h3>Status Produk</h3>
@@ -76,6 +154,17 @@ document.getElementById("output").innerHTML=`
 
 </div>
 `
+
+}catch(error){
+
+document.getElementById("output").innerHTML=
+`
+<div class="result">
+Error koneksi ke AI / Google Script
+</div>
+`
+
+}
 
 }
 
