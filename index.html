@@ -63,54 +63,70 @@ alert("Isi nama produk dulu")
 return
 }
 
-document.getElementById("output").innerHTML="AI sedang membuat konten..."
+document.getElementById("output").innerHTML="AI sedang membuat script..."
 
-let prompt=`
-Kamu adalah kreator konten Shopee Affiliate Indonesia.
+let prompt = `
+Buatkan script konten video Shopee Affiliate.
 
 Produk: ${nama}
 Harga: ${harga}
 Rating: ${rating}
 Terjual: ${terjual}
 
-Buatkan konten affiliate dengan format:
+Format:
 
-MASALAH
 HOOK
 VOICE OVER
-CTA
+TEKS VIDEO
+JUDUL VIDEO
 CAPTION
 HASHTAG
-STATUS PRODUK (GAS / COBA / RESIKO)
 
-Gunakan bahasa santai seperti konten TikTok.
+Gunakan gaya bahasa santai seperti kreator TikTok Indonesia.
 `
 
 try{
 
-let response=await fetch(
-`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`,
+let response = await fetch(
+`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
 {
 method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
 body:JSON.stringify({
-contents:[{
-parts:[{text:prompt}]
-}]
+contents:[
+{
+parts:[
+{ text: prompt }
+]
+}
+]
 })
-})
+}
+)
 
-let data=await response.json()
+let data = await response.json()
 
-let hasil=data.candidates[0].content.parts[0].text
+console.log(data)   // ini buat lihat error di console
 
-tampilkan(hasil,"green")
+if(data.candidates && data.candidates.length > 0){
 
-kirimSheet(nama,harga,rating,terjual,"AI Analisa",hasil,"AI")
+let hasil = data.candidates[0].content.parts[0].text
 
-}catch(e){
+tampilkan(hasil)
+
+kirimSheet(nama,harga,rating,terjual,hasil)
+
+}else{
+
+throw new Error("AI tidak mengembalikan hasil")
+
+}
+
+}catch(err){
+
+console.log("AI error:",err)
 
 fallbackScript(nama,harga,rating,terjual)
 
@@ -221,4 +237,5 @@ status:status
 
 </body>
 </html>
+
 
