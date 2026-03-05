@@ -12,9 +12,12 @@ header{background:#111827;color:white;text-align:center;padding:20px;}
 .container{max-width:900px;margin:auto;padding:15px;}
 .card{background:white;padding:15px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
 input{width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #ddd;}
+textarea{width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #ddd;}
 button{padding:10px;background:#2563eb;color:white;border:none;border-radius:6px;margin-top:5px;cursor:pointer;}
 .result{padding:15px;border-radius:10px;margin-top:15px;}
 .green{background:#dcfce7;}
+.orange{background:#fef3c7;}
+.red{background:#fee2e2;}
 pre{white-space:pre-wrap;}
 </style>
 </head>
@@ -36,6 +39,8 @@ pre{white-space:pre-wrap;}
 <input id="rating" placeholder="Rating">
 <input id="terjual" placeholder="Jumlah Terjual">
 
+<textarea id="masalah" placeholder="Masalah produk (opsional)"></textarea>
+
 <button onclick="generate()">Generate Script AI</button>
 
 <div id="output"></div>
@@ -45,7 +50,26 @@ pre{white-space:pre-wrap;}
 
 <script>
 
-const API_KEY="AIzaSyCxAJJi43YzliNk_T6s39TbAux7jX8yEbM"
+const API_KEY="AIzaSyAbCw7li3GJ6ZiZz26V2T3RmlKYufbI68c"
+
+/* ================= STATUS PRODUK ================= */
+
+function cekStatus(rating,terjual){
+
+rating=parseFloat(rating)
+terjual=parseInt(terjual)
+
+if(rating>=4.7 && terjual>=500){
+return "Lanjut"
+}
+
+if(rating>=4.5 && terjual>=100){
+return "Perlu Dicoba"
+}
+
+return "Resiko"
+
+}
 
 /* ================= GENERATE ================= */
 
@@ -55,6 +79,7 @@ let nama=document.getElementById("nama").value
 let harga=document.getElementById("harga").value
 let rating=document.getElementById("rating").value
 let terjual=document.getElementById("terjual").value
+let masalah=document.getElementById("masalah").value
 
 if(!nama){
 alert("Isi nama produk dulu")
@@ -70,6 +95,7 @@ Produk: ${nama}
 Harga: ${harga}
 Rating: ${rating}
 Terjual: ${terjual}
+Masalah Produk: ${masalah}
 
 Format:
 
@@ -103,21 +129,19 @@ let data=await response.json()
 
 let hasil=""
 
-if(data.candidates){
-hasil=data.candidates[0].content.parts[0].text
-}else{
-throw new Error("AI gagal")
+try{
+hasil = data.candidates[0].content.parts.map(p=>p.text).join("")
+}catch(e){
+throw new Error("AI gagal membaca response")
 }
 
-tampilkan(hasil)
-
-kirimSheet(nama,harga,rating,terjual,hasil)
+prosesHasil(nama,harga,rating,terjual,masalah,hasil)
 
 }catch(e){
 
 console.log("AI gagal, pakai fallback")
 
-fallbackScript(nama,harga,rating,terjual)
+fallbackScript(nama,harga,rating,terjual,masalah)
 
 }
 
@@ -125,44 +149,13 @@ fallbackScript(nama,harga,rating,terjual)
 
 /* ================= FALLBACK ================= */
 
-function fallbackScript(nama,harga,rating,terjual){
+function fallbackScript(nama,harga,rating,terjual,masalah){
 
-let hooks=[
-`Baru tau ternyata ada ${nama} kayak gini.`,
-`Serius baru nemu produk ini sekarang.`,
-`Awalnya kupikir ini produk biasa.`,
-`Ternyata ada barang kayak gini juga.`,
-`Ini kecil tapi ternyata kepake banget.`
-]
+let hook=`Baru tau ternyata ada ${nama} kayak gini.`
 
-let ctas=[
-`Linknya aku taruh di keranjang.`,
-`Kalau penasaran cek link keranjang.`,
-`Detail produk ada di keranjang.`,
-`Bisa cek produknya di keranjang.`,
-`Linknya ada di bawah ya.`
-]
+let voiceover=`
 
-let captions=[
-`Produk simpel tapi ternyata membantu.`,
-`Barang kecil tapi sering kepake.`,
-`Ini salah satu produk underrated.`,
-`Kadang solusi itu simpel.`,
-`Produk kecil tapi kepake banget.`
-]
-
-let hashtags=[
-`#racunshopee #produkviral #shopeefinds`,
-`#racunshopee #barangviral #shopeeaffiliate`,
-`#racunshopee #belanjashopee #produkviral`
-]
-
-let hook=hooks[Math.floor(Math.random()*hooks.length)]
-let cta=ctas[Math.floor(Math.random()*ctas.length)]
-let caption=captions[Math.floor(Math.random()*captions.length)]
-let hashtag=hashtags[Math.floor(Math.random()*hashtags.length)]
-
-let voiceover=hook + `
+${hook}
 
 Awalnya kupikir ini cuma produk biasa.
 
@@ -170,11 +163,13 @@ Tapi ternyata cukup membantu dipakai.
 
 Harganya sekitar Rp ${harga}.
 
-Ratingnya ${rating} dan yang beli sudah ${terjual}+.
+Ratingnya ${rating} dan sudah terjual ${terjual}+.
 
-` + cta
+Link produk ada di keranjang.
+`
 
 let teksVideo=`
+
 Produk simpel tapi kepake
 
 Harga Rp ${harga}
@@ -186,8 +181,6 @@ Terjual ${terjual}+
 Cek keranjang
 `
 
-let judul=`Produk yang ternyata kepake banget`
-
 let hasil=`
 
 VOICE OVER
@@ -197,42 +190,48 @@ TEKS VIDEO
 ${teksVideo}
 
 JUDUL VIDEO
-${judul}
+Produk simpel tapi kepake banget
 
 CAPTION
-${caption}
+Barang kecil tapi kepake.
 
 HASHTAG
-${hashtag}
-
+#racunshopee #produkviral #shopeefinds
 `
 
-tampilkan(hasil)
-
-kirimSheet(nama,harga,rating,terjual,hasil)
+prosesHasil(nama,harga,rating,terjual,masalah,hasil)
 
 }
 
-/* ================= TAMPILKAN ================= */
+/* ================= PROSES HASIL ================= */
 
-function tampilkan(teks){
+function prosesHasil(nama,harga,rating,terjual,masalah,hasil){
+
+let status=cekStatus(rating,terjual)
+
+let warna="green"
+
+if(status=="Perlu Dicoba") warna="orange"
+if(status=="Resiko") warna="red"
 
 document.getElementById("output").innerHTML=`
 
-<div class="result green">
+<div class="result ${warna}">
 
-<h4>Hasil Script</h4>
+<h4>Status Produk: ${status}</h4>
 
-<pre>${teks}</pre>
+<pre>${hasil}</pre>
 
 </div>
 `
+
+kirimSheet(nama,harga,rating,terjual,masalah,hasil,status)
 
 }
 
 /* ================= KIRIM SHEET ================= */
 
-function kirimSheet(nama,harga,rating,terjual,hasil){
+function kirimSheet(nama,harga,rating,terjual,masalah,script,status){
 
 fetch("https://script.google.com/macros/s/AKfycbxrUCoBw0FS4zLUH9rkvYmX_2wsp1giK-jOAkI27oVuBV8CBPHWAdzE8l-carVx631t/exec",{
 
@@ -245,7 +244,9 @@ nama:nama,
 harga:harga,
 rating:rating,
 terjual:terjual,
-script:hasil
+masalah:masalah,
+script:script,
+status:status
 
 })
 
