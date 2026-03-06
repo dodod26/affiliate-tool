@@ -93,13 +93,16 @@ let terjual=document.getElementById("terjual").value
 
 document.getElementById("output").innerHTML="AI sedang membuat script..."
 
-let res=await fetch(URL_SCRIPT,{
+let res = await fetch(URL_SCRIPT,{
 method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
 body:JSON.stringify({
-nama,
-harga,
-rating,
-terjual
+nama:nama,
+harga:harga,
+rating:rating,
+terjual:terjual
 })
 })
 
