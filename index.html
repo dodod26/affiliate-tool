@@ -2,40 +2,38 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>GaptekNiih Viral Scanner AI</title>
+<title>Viral Content AI Generator</title>
 
 <style>
 body{
 font-family:Arial;
 background:#f3f4f6;
-margin:0
+margin:0;
 }
 
 header{
 background:#111827;
 color:white;
 padding:20px;
-text-align:center
+text-align:center;
 }
 
 .container{
-max-width:800px;
+max-width:700px;
 margin:auto;
-padding:20px
+padding:20px;
 }
 
 .card{
 background:white;
 padding:20px;
-border-radius:10px
+border-radius:10px;
 }
 
 input{
 width:100%;
 padding:10px;
 margin:6px 0;
-border:1px solid #ddd;
-border-radius:6px
 }
 
 button{
@@ -44,66 +42,47 @@ background:#2563eb;
 color:white;
 border:none;
 border-radius:6px;
-cursor:pointer
-}
-
-button:hover{
-background:#1e40af
+cursor:pointer;
 }
 
 .result{
 margin-top:20px;
 padding:20px;
 background:#dcfce7;
-border-radius:10px
-}
-
-.loading{
-margin-top:20px;
-padding:20px;
-background:#fef3c7;
-border-radius:10px
+border-radius:10px;
 }
 
 pre{
-white-space:pre-wrap
+white-space:pre-wrap;
 }
-</style>
 
+</style>
 </head>
 
 <body>
 
 <header>
-<h2>GaptekNiih Viral Scanner AI</h2>
-<p>Shopee Affiliate Script Generator</p>
+<h2>Viral Script AI Generator</h2>
 </header>
 
 <div class="container">
-
 <div class="card">
 
-<h3>Input Data Produk</h3>
-
 <input id="nama" placeholder="Nama Produk">
-
-<input id="harga" placeholder="Harga (contoh: 45000)">
-
-<input id="rating" placeholder="Rating (contoh: 4.8)">
-
-<input id="terjual" placeholder="Jumlah Terjual (contoh: 1200)">
+<input id="harga" placeholder="Harga">
+<input id="rating" placeholder="Rating">
+<input id="terjual" placeholder="Jumlah Terjual">
 
 <button onclick="generate()">Analisa & Generate Script</button>
 
 <div id="output"></div>
 
 </div>
-
 </div>
 
 <script>
 
-const URL_SCRIPT="https://script.google.com/macros/s/AKfycbyx79jd0WkDSifTWiomOeFuyAKnGjf3Whu3x_wbAli4OwoMjlsVQYZ6xufhd6U6Wdci/exec"
+const URL_SCRIPT="PASTE_URL_SCRIPT_KAMU"
 
 async function generate(){
 
@@ -112,37 +91,22 @@ let harga=document.getElementById("harga").value
 let rating=document.getElementById("rating").value
 let terjual=document.getElementById("terjual").value
 
-if(!nama){
-alert("Isi nama produk dulu")
-return
-}
+document.getElementById("output").innerHTML="AI sedang membuat script..."
 
-document.getElementById("output").innerHTML=
-`
-<div class="loading">
-AI sedang membuat script...
-</div>
-`
-
-try{
-
-let response=await fetch(URL_SCRIPT,{
+let res=await fetch(URL_SCRIPT,{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
 body:JSON.stringify({
-nama:nama,
-harga:harga,
-rating:rating,
-terjual:terjual
+nama,
+harga,
+rating,
+terjual
 })
 })
 
-let data=await response.json()
+let data=await res.json()
 
-document.getElementById("output").innerHTML=
-`
+document.getElementById("output").innerHTML=`
+
 <div class="result">
 
 <h3>Status Produk</h3>
@@ -153,18 +117,8 @@ document.getElementById("output").innerHTML=
 <pre>${data.script}</pre>
 
 </div>
-`
 
-}catch(error){
-
-document.getElementById("output").innerHTML=
 `
-<div class="result">
-Error koneksi ke AI / Google Script
-</div>
-`
-
-}
 
 }
 
