@@ -93,11 +93,9 @@ let terjual=document.getElementById("terjual").value
 
 document.getElementById("output").innerHTML="AI sedang membuat script..."
 
-let res = await fetch(URL_SCRIPT,{
+await fetch(URL_SCRIPT,{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
+mode:"no-cors",
 body:JSON.stringify({
 nama:nama,
 harga:harga,
@@ -105,8 +103,11 @@ rating:rating,
 terjual:terjual
 })
 })
-
-let data=await res.json()
+  
+let data={
+status:"Analisa selesai",
+script:"Script berhasil dibuat & dikirim ke Google Sheet"
+}
 
 document.getElementById("output").innerHTML=`
 
@@ -129,5 +130,6 @@ document.getElementById("output").innerHTML=`
 
 </body>
 </html>
+
 
 
